@@ -1,0 +1,21 @@
+{
+  "name": "CalidadProject - Java + JMeter",
+  "build": {
+    "dockerfile": "Dockerfile",
+    "args": {
+      "JAVA_VERSION": "21"
+    }
+  },
+  "remoteUser": "vscode",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "vscjava.vscode-java-pack"
+      ],
+      "settings": {
+        "java.configuration.updateBuildConfiguration": "automatic"
+      }
+    }
+  },
+  "postCreateCommand": "java -version && mvn -version && jmeter --version"
+}
