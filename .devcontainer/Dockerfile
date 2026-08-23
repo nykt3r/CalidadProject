@@ -9,6 +9,7 @@ RUN dnf install -y \
         git \
         tar \
         gzip \
+        xz \
         shadow-utils \
     && dnf clean all \
     && groupadd --gid ${USER_GID} ${USERNAME} \
@@ -27,5 +28,13 @@ RUN curl -fSL "https://archive.apache.org/dist/jmeter/binaries/apache-jmeter-${J
     && ln -s /opt/apache-jmeter-${JMETER_VERSION} /opt/jmeter
 ENV JMETER_HOME=/opt/jmeter \
     PATH=/opt/jmeter/bin:${PATH}
+
+ARG NODE_VERSION=22.23.2
+ENV NODE_HOME=/opt/node \
+    PATH=/opt/node/bin:${PATH}
+RUN curl -fSL "https://nodejs.org/dist/v${NODE_VERSION}/node-v${NODE_VERSION}-linux-x64.tar.xz" \
+        | tar -xJ -C /opt \
+    && ln -s /opt/node-v${NODE_VERSION}-linux-x64 /opt/node \
+    && npm install -g @fission-ai/openspec@latest
 
 USER ${USERNAME}
