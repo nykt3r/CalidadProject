@@ -9,6 +9,7 @@ Entorno de desarrollo reproducible para todo el equipo: **Java 21**, **Maven** y
 | JDK | Amazon Corretto **21** (`al2023`) | Base: Amazon Linux 2023 |
 | Maven | **3.9.9** | Instalado en `/opt/maven` |
 | JMeter | **5.6.3** | Instalado en `/opt/jmeter`, modo CLI (sin GUI) |
+| Sonar Scanner CLI | **6.2.1** | Instalado en `/opt/sonar-scanner`. Cliente que envía tu código al servidor SonarQube |
 | Git | Incluido en la imagen | — |
 
 Usuario del contenedor: `vscode` (uid/gid 1000).
@@ -142,7 +143,45 @@ jmeter -n -t plan-de-pruebas.jmx \
 
 ---
 
-## 7. Solución de problemas
+## 7. SonarQube (análisis estático)
+
+El setup respeta la filosofía del proyecto (**nada de herramientas en tu local**):
+- El **servidor** SonarQube corre como contenedor *sidecar* definido en `docker-compose.yml` (raíz del repo): imagen oficial `sonarqube:lts-community` + PostgreSQL 16.
+- El **scanner** (cliente que manda tu código al servidor) está instalado dentro de este devcontainer en `/opt/sonar-scanner`.
+
+### 7.1 Levantar el servidor
+```bash
+docker compose up -d
+```
+- Dashboard: <http://localhost:9000>
+- Primer acceso: usuario `admin`, password `admin` (el servidor te pedirá cambiarla).
+- Detener sin borrar datos: `docker compose down`.
+- Borrar datos por completo: `docker compose down -v`.
+
+### 7.2 Conectividad devcontainer ↔ servidor
+El devcontainer y el servidor son contenedores independientes. Para que el scanner alcance al servidor, usa `host.docker.internal` como host (no `localhost`):
+```bash
+sonar-scanner \
+  -Dsonar.projectKey=calidad-project \
+  -Dsonar.host.url=http://host.docker.internal:9000 \
+  -Dsonar.login=<TOKEN>
+```
+> En Docker Desktop (`extra_hosts`) `host.docker.internal` funciona sin config. En Docker Engine de Linux debe añadirse `--add-host=host.docker.internal:host-gateway` al contenedor del devcontainer si el host por defecto no lo resuelve.
+
+### 7.3 Crear un token
+1. Entra en el dashboard (`:9000`) → **My Account** (esquina superior) → **Security** → **Tokens**.
+2. Crea un token y pásalo con `-Dsonar.login=<TOKEN>` al scanner.
+
+### 7.4 Verificación de carga (JSON no interactivo)
+```bash
+sonar-scanner --version   # dentro del devcontainer
+```
+
+> Para un análisis por defecto con `sonar-project.properties`, el scanner genera `.scannerwork/` en el directorio actual (ya ignorado por `.gitignore`).
+
+---
+
+## 8. Solución de problemas
 
 | Síntoma | Causa/Solución |
 |---|---|
@@ -152,3 +191,5 @@ jmeter -n -t plan-de-pruebas.jmx \
 | `permission denied` al usar docker (Linux) | Falta agregar tu usuario al grupo `docker` (ver sección 1) |
 | Archivos creados con dueño incorrecto (Linux) | Ajustar `USER_UID`/`USER_GID` (ver sección 4) |
 | Cambios en Dockerfile no se reflejan | Ejecutar `Dev Containers: Rebuild Container` |
+| Scanner no alcanza al servidor | Verificar que SonarQube esté arriba (`docker compose up -d`) y usar `host.docker.internal` (no `localhost`) como `sonar.host.url` (sección 7.2) |
+| El contenedor no resuelve `host.docker.internal` (Linux) | Añadir `--add-host=host.docker.internal:host-gateway` al contenedor del devcontainer (sección 7.2) |

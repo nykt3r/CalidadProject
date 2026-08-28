@@ -29,6 +29,10 @@ target/
 logs/
 jmeter.log
 
+# --- SonarQube scanner (carpeta temporal de análisis) ---
+.scannerwork/
+sonar-project.properties.bak
+
 # --- JMeter (pruebas de carga) ---
 *.jtl
 report/

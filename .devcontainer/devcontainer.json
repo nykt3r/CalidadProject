@@ -17,5 +17,5 @@
       }
     }
   },
-  "postCreateCommand": "java -version && mvn -version && jmeter --version && node -v && openspec --version"
+  "postCreateCommand": "java -version && mvn -version && jmeter --version && node -v && openspec --version && sonar-scanner --version"
 }

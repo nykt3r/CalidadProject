@@ -37,4 +37,15 @@ RUN curl -fSL "https://nodejs.org/dist/v${NODE_VERSION}/node-v${NODE_VERSION}-li
     && ln -s /opt/node-v${NODE_VERSION}-linux-x64 /opt/node \
     && npm install -g @fission-ai/openspec@latest
 
+ARG SONAR_SCANNER_VERSION=6.2.1.4610
+RUN curl -fSL "https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-${SONAR_SCANNER_VERSION}-linux-x64.zip" \
+        -o /tmp/sonar-scanner.zip \
+    && dnf install -y unzip \
+    && unzip /tmp/sonar-scanner.zip -d /opt \
+    && mv /opt/sonar-scanner-${SONAR_SCANNER_VERSION}-linux-x64 /opt/sonar-scanner \
+    && rm /tmp/sonar-scanner.zip \
+    && dnf clean all
+ENV SONAR_SCANNER_HOME=/opt/sonar-scanner \
+    PATH=/opt/sonar-scanner/bin:${PATH}
+
 USER ${USERNAME}
