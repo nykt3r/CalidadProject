@@ -1,0 +1,34 @@
+# --- Java / Maven ---
+target/
+*.class
+*.jar
+*.war
+*.ear
+*.nar
+*.classpath
+*.project
+*.settings/
+.idea/
+*.iml
+.vscode/
+.mvn/timing.properties
+.mvn/wrapper/maven-wrapper.jar
+
+# --- Gradle (referenciado por pipeline.yml: untitled1/) ---
+.gradle/
+**/build/
+
+# --- IDEs / editor ---
+.DS_Store
+*.swp
+*.swo
+*~
+
+# --- Logs ---
+*.log
+logs/
+jmeter.log
+
+# --- JMeter (pruebas de carga) ---
+*.jtl
+report/
