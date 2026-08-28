@@ -9,19 +9,19 @@ La aplicación real **aún no existe**. El repositorio solo contiene:
 - `.devcontainer/` — entorno reproducible (Java 21 Corretto, Maven 3.9.9, JMeter 5.6.3, Node 22, openspec)
 - `pipeline.yml` — pipeline de Azure DevOps (build/test/acceptanceTest/pitest vía Gradle)
 - `HolaMundo.java` — solo prueba de humo (smoke test)
-- `ContextProject/*.md` — **la fuente de verdad de los requisitos** (ver abajo)
+- `docs/*.md` — **la fuente de verdad de los requisitos** (ver abajo)
 
 No trates `pipeline.yml` como la realidad actual: compila un proyecto Gradle en `untitled1/`
 que aún no existe. Primero construye la app Spring Boot real y luego reconcilia el pipeline.
 
 ## Requisitos / especificaciones
-Los requisitos viven en `ContextProject/` (en español):
-- `ProjectContext.md` — alcance + tecnología (Java 17+, Spring Boot REST)
-- `BusinessRules.md` — 8 reglas obligatorias (usuario inactivo, recursos en mantenimiento/fuera
+Los requisitos viven en `docs/` (en español):
+- `project-context.md` — alcance + tecnología (Java 17+, Spring Boot REST)
+- `business-rules.md` — 8 reglas obligatorias (usuario inactivo, recursos en mantenimiento/fuera
   de servicio, sin reservas solapadas, máximo 3 reservas activas por usuario, etc.)
-- `ApiContract.md` / `DataModel.md` — contrato de endpoints + modelo de entidades con estados de enum exactos
-- `ErrorHandling.md` — `@RestControllerAdvice` global; cuerpo de error con forma `{status, error, message}`
-- `QualityRequirements.md` — tooling futuro: SonarQube, JUnit, Mockito, PIT, Postman, JMeter
+- `api-contract.md` / `data-model.md` — contrato de endpoints + modelo de entidades con estados de enum exactos
+- `error-handling.md` — `@RestControllerAdvice` global; cuerpo de error con forma `{status, error, message}`
+- `quality-requirements.md` — tooling futuro: SonarQube, JUnit, Mockito, PIT, Postman, JMeter
 
 La arquitectura es obligatoriamente por capas: Controller → Service → Repository (BD). **Nunca**
 accedas al Repository desde un Controller. Paquetes: `controller, service, repository, entity, dto, exception, mapper`.
