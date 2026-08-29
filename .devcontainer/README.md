@@ -1,13 +1,13 @@
-# Dev Container — CalidadProject (Java + Maven + JMeter)
+# Dev Container — CalidadProject (Java + Gradle + JMeter)
 
-Entorno de desarrollo reproducible para todo el equipo: **Java 21**, **Maven** y **Apache JMeter** empaquetados en un contenedor Docker, con integración nativa en VS Code.
+Entorno de desarrollo reproducible para todo el equipo: **Java 21**, **Gradle** y **Apache JMeter** empaquetados en un contenedor Docker, con integración nativa en VS Code.
 
 ## Herramientas incluidas
 
 | Herramienta | Versión | Notas |
 |---|---|---|
 | JDK | Amazon Corretto **21** (`al2023`) | Base: Amazon Linux 2023 |
-| Maven | **3.9.9** | Instalado en `/opt/maven` |
+| Gradle | **9.7.1** | Instalado en `/opt/gradle` |
 | JMeter | **5.6.3** | Instalado en `/opt/jmeter`, modo CLI (sin GUI) |
 | Sonar Scanner CLI | **6.2.1** | Instalado en `/opt/sonar-scanner`. Cliente que envía tu código al servidor SonarQube |
 | Git | Incluido en la imagen | — |
@@ -27,7 +27,7 @@ Usuario del contenedor: `vscode` (uid/gid 1000).
 > La imagen base es multi-arquitectura: funciona de forma nativa en x86_64 y ARM64 (Apple Silicon incluido).
 
 ### Recomendación importante para Windows
-Clona el repositorio **dentro del sistema de archivos de WSL** (ej. `~/workspace/CalidadProject`) y no en `C:\...`. El I/O sobre `/mnt/c` es drásticamente más lento (afecta compilación Maven y ejecución de JMeter).
+Clona el repositorio **dentro del sistema de archivos de WSL** (ej. `~/workspace/CalidadProject`) y no en `C:\...`. El I/O sobre `/mnt/c` es drásticamente más lento (afecta compilación Gradle y ejecución de JMeter).
 
 ```powershell
 # Desde PowerShell (abre el repo dentro de WSL)
@@ -42,13 +42,13 @@ code .
 
 1. Abre la carpeta del proyecto en VS Code.
 2. Ejecuta el comando `Dev Containers: Reopen in Container` (F1 o Ctrl+Shift+P).
-   - La primera vez compila la imagen (~2-4 min, descarga Maven y JMeter).
+   - La primera vez compila la imagen (~2-4 min, descarga Gradle y JMeter).
    - Siguientes veces arranca en segundos usando caché.
 3. Al terminar verás en el log del contenedor la salida del `postCreateCommand`:
 
 ```
 openjdk version "21.x.x" ...
-Apache Maven 3.9.9 ...
+Gradle 9.7.1 ...
 Copyright (c) 1999-2024 The Apache Software Foundation   ← JMeter 5.6.3
 ```
 

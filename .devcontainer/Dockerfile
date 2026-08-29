@@ -11,16 +11,20 @@ RUN dnf install -y \
         gzip \
         xz \
         shadow-utils \
+        unzip \
+        findutils \
     && dnf clean all \
     && groupadd --gid ${USER_GID} ${USERNAME} \
     && useradd --uid ${USER_UID} --gid ${USER_GID} --create-home --shell /bin/bash ${USERNAME}
 
-ARG MAVEN_VERSION=3.9.9
-RUN curl -fSL "https://archive.apache.org/dist/maven/maven-3/${MAVEN_VERSION}/binaries/apache-maven-${MAVEN_VERSION}-bin.tar.gz" \
-        | tar -xz -C /opt \
-    && ln -s /opt/apache-maven-${MAVEN_VERSION} /opt/maven
-ENV MAVEN_HOME=/opt/maven \
-    PATH=/opt/maven/bin:${PATH}
+ARG GRADLE_VERSION=9.7.1
+RUN curl -fSL "https://services.gradle.org/distributions/gradle-${GRADLE_VERSION}-bin.zip" \
+        -o /tmp/gradle.zip \
+    && unzip /tmp/gradle.zip -d /opt \
+    && mv /opt/gradle-${GRADLE_VERSION} /opt/gradle \
+    && rm /tmp/gradle.zip
+ENV GRADLE_HOME=/opt/gradle \
+    PATH=/opt/gradle/bin:${PATH}
 
 ARG JMETER_VERSION=5.6.3
 RUN curl -fSL "https://archive.apache.org/dist/jmeter/binaries/apache-jmeter-${JMETER_VERSION}.tgz" \
@@ -40,7 +44,6 @@ RUN curl -fSL "https://nodejs.org/dist/v${NODE_VERSION}/node-v${NODE_VERSION}-li
 ARG SONAR_SCANNER_VERSION=6.2.1.4610
 RUN curl -fSL "https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-${SONAR_SCANNER_VERSION}-linux-x64.zip" \
         -o /tmp/sonar-scanner.zip \
-    && dnf install -y unzip \
     && unzip /tmp/sonar-scanner.zip -d /opt \
     && mv /opt/sonar-scanner-${SONAR_SCANNER_VERSION}-linux-x64 /opt/sonar-scanner \
     && rm /tmp/sonar-scanner.zip \

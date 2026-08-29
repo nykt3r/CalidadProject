@@ -6,7 +6,7 @@ espacios/recursos (laboratorios, salas, equipos audiovisuales). La documentació
 
 ## Estado actual (importante)
 La aplicación real **aún no existe**. El repositorio solo contiene:
-- `.devcontainer/` — entorno reproducible (Java 21 Corretto, Maven 3.9.9, JMeter 5.6.3, Node 22, openspec)
+- `.devcontainer/` — entorno reproducible (Java 21 Corretto, Gradle 9.7.1, JMeter 5.6.3, Node 22, openspec)
 - `pipeline.yml` — pipeline de Azure DevOps (build/test/acceptanceTest/pitest vía Gradle)
 - `HolaMundo.java` — solo prueba de humo (smoke test)
 - `docs/*.md` — **la fuente de verdad de los requisitos** (ver abajo)
@@ -28,11 +28,12 @@ accedas al Repository desde un Controller. Paquetes: `controller, service, repos
 
 ## Entorno de desarrollo
 - Trabaja dentro del devcontainer (VS Code "Reopen in Container"); reconstruye tras cambios en el Dockerfile.
-- Verifica la instalación: `java -version && mvn -version && jmeter --version && node -v && openspec --version`.
+- Verifica la instalación: `java -version && gradle --version && jmeter --version && node -v && openspec --version`.
 - JMeter es solo headless: `jmeter -n -t plan.jmx -l results.jtl -e -o report/`.
 
 ## Problemas comunes (gotchas)
 - Todavía no existe `.gitignore`. `jmeter.log`, `*.jtl` y `report/` son generados y deberían ignorarse.
-- En Windows, prefiere trabajar dentro del filesystem de WSL — el I/O en `/mnt/c` es muy lento (afecta a Maven/JMeter).
+- En Windows, prefiere trabajar dentro del filesystem de WSL — el I/O en `/mnt/c` es muy lento (afecta a Gradle/JMeter).
 - No vuelvas a añadir `curl` a la lista de paquetes dnf del Dockerfile (rompe el build — la imagen base ya trae `curl-minimal`).
+- Gradle no arranca sin `xargs`/`find`: la imagen base es mínima, por eso `findutils` (y `unzip`) están en el `dnf install` del Dockerfile; no los quites.
 - Es un proyecto de enseñanza/QA, no de producción.

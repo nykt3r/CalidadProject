@@ -1,5 +1,4 @@
-# --- Java / Maven ---
-target/
+# --- Java / Gradle ---
 *.class
 *.jar
 *.war
@@ -11,10 +10,8 @@ target/
 .idea/
 *.iml
 .vscode/
-.mvn/timing.properties
-.mvn/wrapper/maven-wrapper.jar
 
-# --- Gradle (referenciado por pipeline.yml: untitled1/) ---
+# --- Gradle ---
 .gradle/
 **/build/
 

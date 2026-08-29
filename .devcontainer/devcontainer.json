@@ -1,5 +1,5 @@
 {
-  "name": "CalidadProject - Java + JMeter",
+  "name": "CalidadProject - Java + Gradle + JMeter",
   "build": {
     "dockerfile": "Dockerfile",
     "args": {
@@ -17,5 +17,5 @@
       }
     }
   },
-  "postCreateCommand": "java -version && mvn -version && jmeter --version && node -v && openspec --version && sonar-scanner --version"
+  "postCreateCommand": "java -version && gradle --version && jmeter --version && node -v && openspec --version && sonar-scanner --version"
 }
