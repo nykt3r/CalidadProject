@@ -110,14 +110,19 @@ docker run --rm -it -v "${PWD}:/workspace" -w //workspace calidad-dev bash
 
 ---
 
-## 5. Verificación rápida ("Hola, Mundo")
+## 5. Verificación rápida (proyecto Spring Boot)
 
-Hay un archivo de prueba en la raíz: `HolaMundo.java`.
+El repo es un proyecto Spring Boot con Gradle. Para confirmar que el entorno compila y levanta:
 
 ```bash
-javac HolaMundo.java && java HolaMundo
-# Salida esperada: ¡Hola, Mundo desde CalidadProject!
-rm HolaMundo.class   # limpiar artefacto
+./gradlew build            # compila + empaqueta (el wrapper usa Gradle 9.7.1)
+./gradlew bootRun          # levanta la API en http://localhost:8080
+```
+
+Prueba el endpoint definido hasta el momento:
+
+```bash
+curl http://localhost:8080/usuarios
 ```
 
 ---

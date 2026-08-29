@@ -1,0 +1,2 @@
+INSERT INTO usuarios (nombre, documento, correo, estado) VALUES ('Ana García', 'DOC-001', 'ana@example.com', 'ACTIVO');
+INSERT INTO usuarios (nombre, documento, correo, estado) VALUES ('Luis Pérez', 'DOC-002', 'luis@example.com', 'INACTIVO');
