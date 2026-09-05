@@ -151,7 +151,7 @@ jmeter -n -t plan-de-pruebas.jmx \
 ## 7. SonarQube (análisis estático)
 
 El setup respeta la filosofía del proyecto (**nada de herramientas en tu local**):
-- El **servidor** SonarQube corre como contenedor *sidecar* definido en `docker-compose.yml` (raíz del repo): imagen oficial `sonarqube:lts-community` + PostgreSQL 16.
+- El **servidor** SonarQube corre como contenedor *sidecar* definido en `docker-compose.yml` (raíz del repo): imagen oficial `sonarqube:26.8.0.126808-community` (versión fija) + PostgreSQL 16.
 - El **scanner** (cliente que manda tu código al servidor) está instalado dentro de este devcontainer en `/opt/sonar-scanner`.
 
 ### 7.1 Levantar el servidor
