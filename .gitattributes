@@ -1,0 +1,9 @@
+# Force LF for files that must be Unix-compatible (shell scripts, gradle wrapper)
+gradlew text eol=lf
+*.sh text eol=lf
+
+# Force CRLF for Windows batch files
+*.bat text eol=crlf
+
+# All other text files: normalize to LF in repo, respect platform on checkout
+* text=auto eol=lf
