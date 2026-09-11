@@ -5,7 +5,7 @@ pool:
   name: LocalPool
 
 variables:
-  projectDir: 'CalidadProject'
+  projectDir: 'CalidadProject.git'
   system.debug: 'true'
 
 steps:
@@ -63,4 +63,4 @@ steps:
   #     workingDirectory: '$(projectDir)'
   #     gradleWrapperFile: '$(projectDir)/gradlew'
   #     gradleOptions: '-Dfile.encoding=UTF-8'
-  #     tasks: 'sonarqube --info --stacktrace'
+  #     tasks: 'sonarqube --info --stacktrace' 
