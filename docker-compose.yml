@@ -27,6 +27,8 @@ services:
       - sonarqube_data:/opt/sonarqube/data
       - sonarqube_extensions:/opt/sonarqube/extensions
       - sonarqube_logs:/opt/sonarqube/logs
+    networks:
+      - sonarqnet
     restart: unless-stopped
 
   db:
@@ -38,6 +40,8 @@ services:
       POSTGRES_DB: sonar
     volumes:
       - sonarqube_pgdata:/var/lib/postgresql/data
+    networks:
+      - sonarqnet
     restart: unless-stopped
 
 volumes:
@@ -45,3 +49,7 @@ volumes:
   sonarqube_extensions:
   sonarqube_logs:
   sonarqube_pgdata:
+
+networks:
+  sonarqnet:
+    name: sonarqnet

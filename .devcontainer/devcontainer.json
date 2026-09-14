@@ -7,6 +7,12 @@
     }
   },
   "remoteUser": "vscode",
+  "runArgs": [
+    "--network=sonarqnet"
+  ],
+  "remoteEnv": {
+    "SONAR_HOST_URL": "http://sonarqube:9000"
+  },
   "customizations": {
     "vscode": {
       "extensions": [

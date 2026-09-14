@@ -61,7 +61,7 @@ sonar {
     properties {
         property 'sonar.projectKey', 'CalidadProject'
         property 'sonar.projectName', 'Proyecto Demo Calidad'
-        property 'sonar.host.url', 'http://host.docker.internal:9000'
+        property 'sonar.host.url', System.getenv('SONAR_HOST_URL') ?: 'http://localhost:9000'
         property 'sonar.token', System.getenv('SONAR_TOKEN')
     }
 }

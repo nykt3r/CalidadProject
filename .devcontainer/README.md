@@ -164,14 +164,23 @@ docker compose up -d
 - Borrar datos por completo: `docker compose down -v`.
 
 ### 7.2 Conectividad devcontainer ↔ servidor
-El devcontainer y el servidor son contenedores independientes. Para que el scanner alcance al servidor, usa `host.docker.internal` como host (no `localhost`):
+El devcontainer y el servidor se comunican **por red Docker** (nombre de servicio `sonarqube`), sin depender de `host.docker.internal` ni del sistema operativo (funciona igual en Docker Desktop de Windows/macOS y en Docker Engine de Linux). El devcontainer arranca unido a la red `sonarqnet` (definida en `docker-compose.yml`) y su variable `SONAR_HOST_URL` apunta a `http://sonarqube:9000`.
+
+**Orden obligatorio** (la red `sonarqnet` debe existir antes de crear el contenedor):
+```bash
+docker compose up -d          # crea la red + SonarQube
+# en VS Code: Dev Containers > Rebuild Container   (aplica runArgs/remoteEnv)
+```
+
+Uso directo del scanner dentro del devcontainer:
 ```bash
 sonar-scanner \
   -Dsonar.projectKey=calidad-project \
-  -Dsonar.host.url=http://host.docker.internal:9000 \
+  -Dsonar.host.url="$SONAR_HOST_URL" \
   -Dsonar.login=<TOKEN>
 ```
-> En Docker Desktop (`extra_hosts`) `host.docker.internal` funciona sin config. En Docker Engine de Linux debe añadirse `--add-host=host.docker.internal:host-gateway` al contenedor del devcontainer si el host por defecto no lo resuelve.
+
+> Para Gradle, `build.gradle` toma `sonar.host.url` de la variable `SONAR_HOST_URL` (ya seteada en el devcontainer) y, si no existe, usa `http://localhost:9000` (caso: correr Gradle directamente en el host, p. ej. el agente local de Azure en la misma máquina donde corre el compose).
 
 ### 7.3 Crear un token
 1. Entra en el dashboard (`:9000`) → **My Account** (esquina superior) → **Security** → **Tokens**.
@@ -196,5 +205,5 @@ sonar-scanner --version   # dentro del devcontainer
 | `permission denied` al usar docker (Linux) | Falta agregar tu usuario al grupo `docker` (ver sección 1) |
 | Archivos creados con dueño incorrecto (Linux) | Ajustar `USER_UID`/`USER_GID` (ver sección 4) |
 | Cambios en Dockerfile no se reflejan | Ejecutar `Dev Containers: Rebuild Container` |
-| Scanner no alcanza al servidor | Verificar que SonarQube esté arriba (`docker compose up -d`) y usar `host.docker.internal` (no `localhost`) como `sonar.host.url` (sección 7.2) |
-| El contenedor no resuelve `host.docker.internal` (Linux) | Añadir `--add-host=host.docker.internal:host-gateway` al contenedor del devcontainer (sección 7.2) |
+| Scanner no alcanza al servidor | Verificar que SonarQube esté arriba (`docker compose up -d`) y que el devcontainer use la red `sonarqnet` (`http://sonarqube:9000`, no `localhost` ni `host.docker.internal`; sección 7.2). Si el contenedor es viejo, ejecutar `Dev Containers: Rebuild Container` |
+| El contenedor no alcanza `sonarqube` | La red `sonarqnet` no existía al crear el contenedor: ejecutar `docker compose up -d` y luego `Dev Containers: Rebuild Container` (sección 7.2) |
