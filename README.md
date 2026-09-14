@@ -27,11 +27,14 @@ audiovisuales). La documentación de requisitos vive en [`docs/`](docs/) y es la
   (`ACTIVO`/`INACTIVO`), `EstadoRecurso` (`DISPONIBLE`/`MANTENIMIENTO`/`FUERA_DE_SERVICIO`),
   `EstadoReserva` (`ACTIVA`/`CANCELADA`/`FINALIZADA`) y `TipoRecurso`.
 - **Repositorios** (`repository`): `UsuarioRepository`, `RecursoRepository`, `ReservaRepository`
-  (Spring Data JPA).
+  (Spring Data JPA), con métodos orientados a las reglas de negocio (`countByUsuarioIdAndEstado`,
+  `findByRecursoIdAndEstado`, índice `recurso_id + fechas`) aún sin consumir por servicios.
 - **Capa de servicio y controlador de usuarios** (mínima): 
   - `UsuarioService` → `listarUsuarios()`
   - `UsuarioController` → `GET /usuarios` (consulta todos los usuarios).
 - **Seed temporal**: `data.sql` inserta 2 usuarios demo al arrancar.
+- **Pruebas**: unitarias con JUnit 5 + Mockito (`UsuarioServiceTest`) y de aceptación con Cucumber
+  (`usuarioService.feature`, integración con la API levantada en puerto aleatorio).
 
 ### Endpoints disponibles
 
@@ -61,6 +64,9 @@ HTTP → Controller → Service → Repository → (JPA/Hibernate) → H2
 
 Los controladores **nunca** acceden al repository directamente (regla del proyecto).
 
+> Nota: en `src/test`, `steps/` y `runners/` cuelgan directo de `src/test` (no de `src/test/java/`);
+> lo permite `build.gradle` con `sourceSets.test.java.srcDir file('src/test')`.
+
 ## 3. Estructura del proyecto
 
 ```
@@ -76,6 +82,13 @@ Los controladores **nunca** acceden al repository directamente (regla del proyec
 ├── src/main/resources/
 │   ├── application.yml                 # configuración (H2, puerto 8080, JPA)
 │   └── data.sql                        # seed temporal (2 usuarios demo)
+├── src/test/
+│   ├── java/app/calidad/reservas/service/UsuarioServiceTest.java  # tests unitarios (Mockito)
+│   ├── steps/usuarioSteps.java         # steps de Cucumber (integración RANDOM_PORT)
+│   ├── runners/RunCucumberTest.java    # runner JUnit Platform de Cucumber
+│   └── resources/
+│       ├── features/usuarioService.feature      # escenarios de aceptación
+│       └── junit-platform.properties    # configuración de Cucumber (glue, features)
 ├── docs/                               # requisitos (fuente de verdad)
 ├── .devcontainer/                      # entorno reproducible (Java + Gradle + JMeter)
 └── azure-pipeline.yml                  # CI Azure DevOps (build/test/acceptanceTest/pitest)
@@ -148,6 +161,8 @@ docker run --rm -p 8080:8080 \
 | `./gradlew clean build` | Reconstrucción limpia |
 | `./gradlew bootRun` | Levanta la API en `http://localhost:8080` |
 | `./gradlew test` | Ejecuta solo las pruebas |
+| `./gradlew acceptanceTest` | Ejecuta las pruebas de aceptación (Cucumber) |
+| `./gradlew pitest` | Mutation testing (PIT) sobre `app.calidad.reservas.service.*` |
 | `./gradlew bootJar` | Empaqueta `build/libs/CalidadProject-1.0-SNAPSHOT.jar` (ejecutable: `java -jar ...`) |
 | `java -jar build/libs/CalidadProject-1.0-SNAPSHOT.jar` | Corre el artefacto sin Gradle |
 
@@ -155,6 +170,8 @@ docker run --rm -p 8080:8080 \
 - `build/libs/CalidadProject-1.0-SNAPSHOT.jar` → JAR autocontenido (app + Tomcat embebido).
 - `build/reports/tests/test/` → informe HTML de pruebas.
 - `build/test-results/test/` → resultados XML (los consume el pipeline CI).
+- `build/test-results/acceptanceTest/` → resultados XML de las pruebas de aceptación.
+- `build/reports/pitest/` → informe HTML/XML de mutation testing (PIT).
 
 ## 6. Configuración (`src/main/resources/application.yml`)
 
@@ -174,9 +191,11 @@ docker run --rm -p 8080:8080 \
 - El resto de endpoints del contrato (`/usuarios/{id}`, estados, `/recursos`, `/reservas`,
   disponibilidad) no existen.
 - `data.sql` (**seed temporal**) inserta los 2 usuarios en cada arranque; se retirará al definir
-  la estrategia de datos real.
-- En el pipeline CI, los stages `acceptanceTest` (Cucumber) y `pitest` fallarán hasta que se
-  configuren esas fases.
+  la estrategia de datos real. Las pruebas de aceptación (Cucumber) dependen de este seed: la
+  feature asume exactamente 2 usuarios.
+- En el pipeline CI, el stage `pitest` (umbral 100 % de mutaciones en `service`) solo podrá
+  habilitarse cuando los servicios cubran las 8 reglas de negocio. `acceptanceTest` ya cuenta con
+  la feature de `GET /usuarios`; se ampliará conforme avance el contrato de usuarios/recursos/reservas.
 
 ---
 

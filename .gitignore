@@ -1,3 +1,6 @@
+# Variables de entorno
+.env
+
 # --- Java / Gradle ---
 *.class
 *.jar

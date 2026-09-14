@@ -13,12 +13,15 @@ La API Spring Boot está **en construcción** en la raíz del repo, con paquete 
 - `service`/`controller` **mínimos de usuarios**: `GET /usuarios` funcional y sin reglas de
   negocio (devuelve entidades, no DTOs). `data.sql` siembra 2 usuarios demo (seed **temporal**,
   requiere `spring.jpa.defer-datasource-initialization: true`).
-El stage `acceptanceTest` (Cucumber) y `pitest` del pipeline **fallarán hasta** que se agreguen
-esas capas; se habilitan en fases posteriores.
+- **Pruebas**: `UsuarioServiceTest` (JUnit + Mockito) y aceptación Cucumber (`usuarioService.feature`)
+  sobre `GET /usuarios` (integración con la API en puerto aleatorio).
+El stage `pitest` del pipeline (umbral 100 % de mutaciones en `service`) **fallará** hasta que los
+servicios cubran las 8 reglas; `acceptanceTest` ya cuenta con la feature de usuarios, pero se
+ampliará conforme avance el contrato.
 
 Falta construir: `dto`, `mapper`, `exception` (+`@RestControllerAdvice`), `service` con las 8
 reglas de negocio, el resto de endpoints (`GET /usuarios/{id}`, PATCH estados, `/recursos`,
-`/reservas`, disponibilidad) y pruebas. Mantener la arquitectura por capas indicada abajo.
+`/reservas`, disponibilidad) y más pruebas. Mantener la arquitectura por capas indicada abajo.
 
 - `.devcontainer/` — entorno reproducible (Java 23 Corretto, Gradle 9.7.1, JMeter 5.6.3, Node 22, openspec, sonar-scanner)
 - `azure-pipeline.yml` — pipeline de Azure DevOps (build/test/acceptanceTest/pitest vía Gradle)
@@ -48,4 +51,10 @@ accedas al Repository desde un Controller. Paquetes: `controller, service, repos
 - En Windows, prefiere trabajar dentro del filesystem de WSL — el I/O en `/mnt/c` es muy lento (afecta a Gradle/JMeter).
 - No vuelvas a añadir `curl` a la lista de paquetes dnf del Dockerfile (rompe el build — la imagen base ya trae `curl-minimal`).
 - Gradle no arranca sin `xargs`/`find`: la imagen base es mínima, por eso `findutils` (y `unzip`) están en el `dnf install` del Dockerfile; no los quites.
+- `src/test` tiene un layout **no estándar**: `steps/` y `runners/` cuelgan directo de `src/test`
+  (no de `src/test/java/`); lo soporta `sourceSets.test.java.srcDir file('src/test')` en
+  `build.gradle`. No muevas esos archivos sin ajustar también el `build.gradle`.
+- `./gradlew test` ya ejecuta Cucumber (`RunCucumberTest` está en la fuente de test con JUnit
+  Platform), por eso el stage `acceptanceTest` del pipeline repite la misma feature. La feature
+  `usuarioService.feature` asume exactamente los 2 usuarios del seed `data.sql`.
 - Es un proyecto de enseñanza/QA, no de producción.
