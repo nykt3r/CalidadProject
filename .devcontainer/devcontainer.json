@@ -3,7 +3,7 @@
   "build": {
     "dockerfile": "Dockerfile",
     "args": {
-      "JAVA_VERSION": "21"
+      "JAVA_VERSION": "23"
     }
   },
   "remoteUser": "vscode",

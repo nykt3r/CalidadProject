@@ -13,7 +13,7 @@ audiovisuales). La documentación de requisitos vive en [`docs/`](docs/) y es la
 
 | Componente | Versión |
 |---|---|
-| Java | 21 (Corretto) |
+| Java | 23 (Corretto) |
 | Spring Boot | 4.1.1 |
 | Gradle | 9.7.1 (wrapper) |
 | Base de datos | H2 en memoria (`jdbc:h2:mem:reservas`) |
@@ -78,7 +78,7 @@ Los controladores **nunca** acceden al repository directamente (regla del proyec
 │   └── data.sql                        # seed temporal (2 usuarios demo)
 ├── docs/                               # requisitos (fuente de verdad)
 ├── .devcontainer/                      # entorno reproducible (Java + Gradle + JMeter)
-└── pipeline.yml                        # CI Azure DevOps (build/test/acceptanceTest/pitest)
+└── azure-pipeline.yml                  # CI Azure DevOps (build/test/acceptanceTest/pitest)
 ```
 
 ## 4. Cómo replicarlo en tu entorno
@@ -86,7 +86,7 @@ Los controladores **nunca** acceden al repository directamente (regla del proyec
 ### Requisitos
 - **Opción A (recomendada)**: Docker + VS Code con la extensión *Dev Containers* (no necesitas
   instalar Java ni Gradle).
-- **Opción B**: JDK 21 y acceso a Red (Gradle lo descarga el propio wrapper).
+- **Opción B**: JDK 23 y acceso a Red (Gradle lo descarga el propio wrapper).
 - **Opción C (sin Java local)**: Docker y la imagen del entorno (`calidad-dev`).
 
 ### Opción A — Devcontainer (GitHub Codespaces / VS Code)
@@ -109,7 +109,7 @@ curl http://localhost:8080/usuarios
 
 ### Opción B — JDK local sin contenedor
 
-Con Java 21 instalado (Gradle lo provee el wrapper):
+Con Java 23 instalado (Gradle lo provee el wrapper):
 
 ```bash
 ./gradlew build
@@ -148,11 +148,11 @@ docker run --rm -p 8080:8080 \
 | `./gradlew clean build` | Reconstrucción limpia |
 | `./gradlew bootRun` | Levanta la API en `http://localhost:8080` |
 | `./gradlew test` | Ejecuta solo las pruebas |
-| `./gradlew bootJar` | Empaqueta `build/libs/reservas-api-0.1.0.jar` (ejecutable: `java -jar ...`) |
-| `java -jar build/libs/reservas-api-0.1.0.jar` | Corre el artefacto sin Gradle |
+| `./gradlew bootJar` | Empaqueta `build/libs/CalidadProject-1.0-SNAPSHOT.jar` (ejecutable: `java -jar ...`) |
+| `java -jar build/libs/CalidadProject-1.0-SNAPSHOT.jar` | Corre el artefacto sin Gradle |
 
 ### Artefactos generados (`build/`, no versionados)
-- `build/libs/reservas-api-0.1.0.jar` → JAR autocontenido (app + Tomcat embebido).
+- `build/libs/CalidadProject-1.0-SNAPSHOT.jar` → JAR autocontenido (app + Tomcat embebido).
 - `build/reports/tests/test/` → informe HTML de pruebas.
 - `build/test-results/test/` → resultados XML (los consume el pipeline CI).
 
@@ -184,4 +184,4 @@ docker run --rm -p 8080:8080 \
 
 - [`docs/`](docs/) — requisitos, reglas de negocio, contrato de API, modelo de datos.
 - [`.devcontainer/README.md`](.devcontainer/README.md) — entorno reproducible + SonarQube + JMeter.
-- [`pipeline.yml`](pipeline.yml) — pipeline de Azure DevOps.
+- [`azure-pipeline.yml`](azure-pipeline.yml) — pipeline de Azure DevOps.

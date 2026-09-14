@@ -7,7 +7,7 @@ espacios/recursos (laboratorios, salas, equipos audiovisuales). La documentació
 ## Estado actual (importante)
 La API Spring Boot está **en construcción** en la raíz del repo, con paquete base
 `app.calidad.reservas` (testigo: `group = 'app.calidad'` en `build.gradle`). Existe:
-- build: Spring Boot 4.1.1, Gradle 9.7.1 (wrapper), Java 21, H2 en memoria.
+- build: Spring Boot 4.1.1, Gradle 9.7.1 (wrapper), Java 23, H2 en memoria.
 - `entity` (Usuario/Recurso/Reserva + enums EstadoUsuario/EstadoRecurso/EstadoReserva/TipoRecurso)
   y `repository` (Usuario/Recurso/ReservaRepository).
 - `service`/`controller` **mínimos de usuarios**: `GET /usuarios` funcional y sin reglas de
@@ -20,8 +20,8 @@ Falta construir: `dto`, `mapper`, `exception` (+`@RestControllerAdvice`), `servi
 reglas de negocio, el resto de endpoints (`GET /usuarios/{id}`, PATCH estados, `/recursos`,
 `/reservas`, disponibilidad) y pruebas. Mantener la arquitectura por capas indicada abajo.
 
-- `.devcontainer/` — entorno reproducible (Java 21 Corretto, Gradle 9.7.1, JMeter 5.6.3, Node 22, openspec, sonar-scanner)
-- `pipeline.yml` — pipeline de Azure DevOps (build/test/acceptanceTest/pitest vía Gradle, `projectDir: .`)
+- `.devcontainer/` — entorno reproducible (Java 23 Corretto, Gradle 9.7.1, JMeter 5.6.3, Node 22, openspec, sonar-scanner)
+- `azure-pipeline.yml` — pipeline de Azure DevOps (build/test/acceptanceTest/pitest vía Gradle)
 - `docs/*.md` — **la fuente de verdad de los requisitos** (ver abajo)
 - `README.md` — guía de funcionamiento y réplica del estado actual.
 

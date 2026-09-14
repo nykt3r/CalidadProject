@@ -1,12 +1,12 @@
 # Dev Container — CalidadProject (Java + Gradle + JMeter)
 
-Entorno de desarrollo reproducible para todo el equipo: **Java 21**, **Gradle** y **Apache JMeter** empaquetados en un contenedor Docker, con integración nativa en VS Code.
+Entorno de desarrollo reproducible para todo el equipo: **Java 23**, **Gradle** y **Apache JMeter** empaquetados en un contenedor Docker, con integración nativa en VS Code.
 
 ## Herramientas incluidas
 
 | Herramienta | Versión | Notas |
 |---|---|---|
-| JDK | Amazon Corretto **21** (`al2023`) | Base: Amazon Linux 2023 |
+| JDK | Amazon Corretto **23** (`al2023`) | Base: Amazon Linux 2023 |
 | Gradle | **9.7.1** | Instalado en `/opt/gradle` |
 | JMeter | **5.6.3** | Instalado en `/opt/jmeter`, modo CLI (sin GUI) |
 | Sonar Scanner CLI | **6.2.1** | Instalado en `/opt/sonar-scanner`. Cliente que envía tu código al servidor SonarQube |
@@ -47,7 +47,7 @@ code .
 3. Al terminar verás en el log del contenedor la salida del `postCreateCommand`:
 
 ```
-openjdk version "21.x.x" ...
+openjdk version "23.x.x" ...
 Gradle 9.7.1 ...
 Copyright (c) 1999-2024 The Apache Software Foundation   ← JMeter 5.6.3
 ```
@@ -99,7 +99,7 @@ docker run --rm -it -v "${PWD}:/workspace" -w //workspace calidad-dev bash
   ```json
   "build": {
     "args": {
-      "JAVA_VERSION": "21",
+      "JAVA_VERSION": "23",
       "USER_UID": "1001",
       "USER_GID": "1001"
     }
