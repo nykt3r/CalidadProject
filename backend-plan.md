@@ -111,23 +111,23 @@ Cualquier cambio a esta sección debe replicarse en `frontend-plan.md §2` antes
 
 ### Fase B0 — Base transversal (bloquea todo lo demás)
 
-- [ ] B0.1 Crear paquete `exception` con una excepción por código del §2.3
+- [x] B0.1 Crear paquete `exception` con una excepción por código del §2.3
       (p. ej. `RecursoNoDisponibleException`, `ReservaSolapadaException`, `LimiteReservasException`,
       `RecursoNoEncontradoException`).
   - *Verificar:* `./gradlew compileJava` en verde.
-- [ ] B0.2 Crear `@RestControllerAdvice` global que mapee cada excepción a su HTTP + cuerpo
+- [x] B0.2 Crear `@RestControllerAdvice` global que mapee cada excepción a su HTTP + cuerpo
       `{status, error, message}`, más handlers para `MethodArgumentNotValidException` (400 VALIDACION)
       y `NoSuchElementException`/`EntityNotFound` (404 NO_ENCONTRADO).
   - *Verificar:* test de slice `@WebMvcTest` o MockMvc que fuerce un 404 y un 400 y aserte el cuerpo exacto.
-- [ ] B0.3 Crear paquetes `dto` (Request/Response del §2.1 con anotaciones `jakarta.validation`) y
+- [x] B0.3 Crear paquetes `dto` (Request/Response del §2.1 con anotaciones `jakarta.validation`) y
       `mapper` (conversión entity ↔ DTO; el mapper de reserva aplana/resume usuario y recurso como en §2.1).
   - *Verificar:* tests unitarios de mappers (entity→DTO y DTO→entity, incluyendo nulos).
-- [ ] B0.4 Configurar CORS centralizado para `http://localhost:5173`.
+- [x] B0.4 Configurar CORS centralizado para `http://localhost:5173`.
   - *Verificar:* `curl -s -o /dev/null -w '%{http_code}' -X OPTIONS http://localhost:8080/usuarios -H 'Origin: http://localhost:5173' -H 'Access-Control-Request-Method: POST'` → `200` con `Access-Control-Allow-Origin`.
-- [ ] B0.5 Migrar `GET /usuarios` a DTOs manteniendo la respuesta compatible con la feature Cucumber
+- [x] B0.5 Migrar `GET /usuarios` a DTOs manteniendo la respuesta compatible con la feature Cucumber
       (mismos campos y 2 usuarios del seed).
   - *Verificar:* `./gradlew test acceptanceTest` en verde.
-- [ ] B0.6 Ampliar `data.sql` con recursos demo (≥3, mezclando estados) y reservas demo coherentes,
+- [x] B0.6 Ampliar `data.sql` con recursos demo (≥3, mezclando estados) y reservas demo coherentes,
       sin alterar los 2 usuarios existentes.
   - *Verificar:* arranque + `curl /recursos` muestra los recursos semilla.
 
