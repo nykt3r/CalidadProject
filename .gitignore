@@ -37,3 +37,7 @@ sonar-project.properties.bak
 # --- JMeter (pruebas de carga) ---
 *.jtl
 report/
+
+# --- Frontend (Vite) ---
+node_modules/
+frontend/dist/

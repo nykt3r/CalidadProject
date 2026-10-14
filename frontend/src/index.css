@@ -1,0 +1,13 @@
+:root {
+  --text: #333;
+  --text-h: #111;
+  --bg: #fff;
+  --border: #ddd;
+  font-family: system-ui, sans-serif;
+  color: var(--text);
+  background: var(--bg);
+}
+
+body { margin: 0; }
+h1 { color: var(--text-h); font-size: 1.6rem; }
+button { cursor: pointer; }

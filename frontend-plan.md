@@ -91,19 +91,19 @@ interface ApiError { status: number; error: string; message: string; }
 
 ### Fase F0 — Andamiaje (bloquea todo lo demás)
 
-- [ ] F0.1 Crear app Vite + React + TS en `frontend/` (`npm create vite@latest frontend -- --template react-ts`),
+- [x] F0.1 Crear app Vite + React + TS en `frontend/` (`npm create vite@latest frontend -- --template react-ts`),
       `npm install` + `npm run dev` levanta en `:5173`.
   - *Verificar:* `http://localhost:5173` muestra la app de ejemplo.
-- [ ] F0.2 Estructura base: `src/api/` (cliente + tipos del §2.1), `src/pages/` (Usuarios, Recursos,
+- [x] F0.2 Estructura base: `src/api/` (cliente + tipos del §2.1), `src/pages/` (Usuarios, Recursos,
       Reservas, Disponibilidad), `src/components/` (tabla, formulario, banner de error, layout),
       `src/mocks/` (datos + cliente mock intercambiable por `VITE_USE_MOCKS=true`).
   - *Verificar:* `npm run build` compila sin errores de TS (`tsc --noEmit` en verde).
-- [ ] F0.3 Cliente API: wrapper `fetch` que antepone `VITE_API_URL`, parsea `ApiError` en respuestas
+- [x] F0.3 Cliente API: wrapper `fetch` que antepone `VITE_API_URL`, parsea `ApiError` en respuestas
       no-2xx y lanza error tipado `{status, error, message}`.
   - *Verificar:* test Vitest que simula un 409 `RESERVA_SOLAPADA` y aserta que el cliente lo propaga íntegro.
-- [ ] F0.4 Router con 4 rutas (`/usuarios`, `/recursos`, `/reservas`, `/disponibilidad`) + layout con navegación.
+- [x] F0.4 Router con 4 rutas (`/usuarios`, `/recursos`, `/reservas`, `/disponibilidad`) + layout con navegación.
   - *Verificar:* navegar entre las 4 rutas sin recarga y sin errores en consola.
-- [ ] F0.5 `.gitignore` (node_modules, dist) y sección en `README.md` o `frontend/README.md`
+- [x] F0.5 `.gitignore` (node_modules, dist) y sección en `README.md` o `frontend/README.md`
       con `npm install / npm run dev / npm run build`.
   - *Verificar:* `git status` no muestra `node_modules` ni `dist`.
 
@@ -111,11 +111,11 @@ interface ApiError { status: number; error: string; message: string; }
 
 ### Fase F1 — Vista Usuarios (filas 1–4 del §2.2)
 
-- [ ] F1.1 Tabla de usuarios (GET) con estado visible + filtro ACTIVO/INACTIVO en cliente.
-- [ ] F1.2 Formulario crear usuario (POST → 201): validación en cliente (obligatorios, formato correo)
+- [x] F1.1 Tabla de usuarios (GET) con estado visible + filtro ACTIVO/INACTIVO en cliente.
+- [x] F1.2 Formulario crear usuario (POST → 201): validación en cliente (obligatorios, formato correo)
       espejo del backend; error `DUPLICADO` junto al campo.
-- [ ] F1.3 Detalle de usuario (GET {id}) + botón activar/inactivar (PATCH) con confirmación.
-- [ ] F1.4 Manejo `NO_ENCONTRADO` (vista dedicada) y banner genérico para el resto.
+- [x] F1.3 Detalle de usuario (GET {id}) + botón activar/inactivar (PATCH) con confirmación.
+- [x] F1.4 Manejo `NO_ENCONTRADO` (vista dedicada) y banner genérico para el resto.
   - *Verificar (contra mocks):* crear → aparece en tabla; inactivar → cambia estado; forzar 404/409 mock y ver la UI correspondiente; cero errores en consola.
 
 **DoD F1:** ciclo completo de usuarios operable solo con la UI.
