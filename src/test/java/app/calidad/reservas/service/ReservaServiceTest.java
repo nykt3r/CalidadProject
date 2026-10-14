@@ -65,7 +65,7 @@ class ReservaServiceTest {
 
     private void mockBaseOk(Usuario usuario, Recurso recurso, long activas) {
         when(usuarioRepository.findById(1L)).thenReturn(Optional.of(usuario));
-        when(recursoRepository.findById(1L)).thenReturn(Optional.of(recurso));
+        when(recursoRepository.findByIdForUpdate(1L)).thenReturn(Optional.of(recurso));
         when(reservaRepository.countByUsuarioIdAndEstado(any(), eq(EstadoReserva.ACTIVA))).thenReturn(activas);
         when(reservaRepository.findActivasSolapadas(any(), any(), any())).thenReturn(List.of());
         when(reservaRepository.save(any(Reserva.class))).thenAnswer(inv -> inv.getArgument(0));
@@ -98,7 +98,7 @@ class ReservaServiceTest {
     @Test
     void crearReservaDebeFallarCuandoRecursoNoExiste() {
         when(usuarioRepository.findById(1L)).thenReturn(Optional.of(usuarioActivo()));
-        when(recursoRepository.findById(999L)).thenReturn(Optional.empty());
+        when(recursoRepository.findByIdForUpdate(999L)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> reservaService.crearReserva(new ReservaRequest(1L, 999L, futuro(10, 9, 0), futuro(10, 11, 0))))
                 .isInstanceOf(NoEncontradoException.class);
@@ -107,7 +107,7 @@ class ReservaServiceTest {
     @Test
     void crearReservaDebeFallarCuandoFinNoEsPosteriorAlInicioRegla4() {
         when(usuarioRepository.findById(1L)).thenReturn(Optional.of(usuarioActivo()));
-        when(recursoRepository.findById(1L)).thenReturn(Optional.of(recursoDisponible()));
+        when(recursoRepository.findByIdForUpdate(1L)).thenReturn(Optional.of(recursoDisponible()));
         LocalDateTime inicio = futuro(10, 11, 0);
 
         assertThatThrownBy(() -> reservaService.crearReserva(new ReservaRequest(1L, 1L, inicio, inicio)))
@@ -117,7 +117,7 @@ class ReservaServiceTest {
     @Test
     void crearReservaDebeFallarCuandoInicioEsPasadoRegla7() {
         when(usuarioRepository.findById(1L)).thenReturn(Optional.of(usuarioActivo()));
-        when(recursoRepository.findById(1L)).thenReturn(Optional.of(recursoDisponible()));
+        when(recursoRepository.findByIdForUpdate(1L)).thenReturn(Optional.of(recursoDisponible()));
 
         assertThatThrownBy(() -> reservaService.crearReserva(
                 new ReservaRequest(1L, 1L, LocalDateTime.now().minusDays(1), LocalDateTime.now().plusDays(1))))
@@ -128,7 +128,7 @@ class ReservaServiceTest {
     void crearReservaDebeFallarCuandoUsuarioInactivoRegla1() {
         Usuario inactivo = new Usuario("Luis Pérez", "DOC-002", "luis@example.com", EstadoUsuario.INACTIVO);
         when(usuarioRepository.findById(2L)).thenReturn(Optional.of(inactivo));
-        when(recursoRepository.findById(1L)).thenReturn(Optional.of(recursoDisponible()));
+        when(recursoRepository.findByIdForUpdate(1L)).thenReturn(Optional.of(recursoDisponible()));
 
         assertThatThrownBy(() -> reservaService.crearReserva(new ReservaRequest(2L, 1L, futuro(10, 9, 0), futuro(10, 11, 0))))
                 .isInstanceOf(UsuarioInactivoException.class);
@@ -138,7 +138,7 @@ class ReservaServiceTest {
     void crearReservaDebeFallarCuandoRecursoEnMantenimientoRegla2() {
         Recurso mantenimiento = new Recurso("Auditorio", null, TipoRecurso.AUDITORIO, 200, EstadoRecurso.MANTENIMIENTO);
         when(usuarioRepository.findById(1L)).thenReturn(Optional.of(usuarioActivo()));
-        when(recursoRepository.findById(2L)).thenReturn(Optional.of(mantenimiento));
+        when(recursoRepository.findByIdForUpdate(2L)).thenReturn(Optional.of(mantenimiento));
 
         assertThatThrownBy(() -> reservaService.crearReserva(new ReservaRequest(1L, 2L, futuro(10, 9, 0), futuro(10, 11, 0))))
                 .isInstanceOf(RecursoEnMantenimientoException.class);
@@ -148,7 +148,7 @@ class ReservaServiceTest {
     void crearReservaDebeFallarCuandoRecursoFueraDeServicioRegla3() {
         Recurso fuera = new Recurso("Sala", null, TipoRecurso.SALA_REUNIONES, 10, EstadoRecurso.FUERA_DE_SERVICIO);
         when(usuarioRepository.findById(1L)).thenReturn(Optional.of(usuarioActivo()));
-        when(recursoRepository.findById(3L)).thenReturn(Optional.of(fuera));
+        when(recursoRepository.findByIdForUpdate(3L)).thenReturn(Optional.of(fuera));
 
         assertThatThrownBy(() -> reservaService.crearReserva(new ReservaRequest(1L, 3L, futuro(10, 9, 0), futuro(10, 11, 0))))
                 .isInstanceOf(RecursoFueraDeServicioException.class);
@@ -159,7 +159,7 @@ class ReservaServiceTest {
         Usuario usuario = usuarioActivo();
         Recurso recurso = recursoDisponible();
         when(usuarioRepository.findById(1L)).thenReturn(Optional.of(usuario));
-        when(recursoRepository.findById(1L)).thenReturn(Optional.of(recurso));
+        when(recursoRepository.findByIdForUpdate(1L)).thenReturn(Optional.of(recurso));
         when(reservaRepository.countByUsuarioIdAndEstado(any(), eq(EstadoReserva.ACTIVA))).thenReturn(3L);
 
         assertThatThrownBy(() -> reservaService.crearReserva(new ReservaRequest(1L, 1L, futuro(10, 9, 0), futuro(10, 11, 0))))
@@ -171,7 +171,7 @@ class ReservaServiceTest {
         Usuario usuario = usuarioActivo();
         Recurso recurso = recursoDisponible();
         when(usuarioRepository.findById(1L)).thenReturn(Optional.of(usuario));
-        when(recursoRepository.findById(1L)).thenReturn(Optional.of(recurso));
+        when(recursoRepository.findByIdForUpdate(1L)).thenReturn(Optional.of(recurso));
         when(reservaRepository.countByUsuarioIdAndEstado(any(), eq(EstadoReserva.ACTIVA))).thenReturn(0L);
         Reserva existente = new Reserva(usuario, recurso, futuro(10, 9, 0), futuro(10, 11, 0), EstadoReserva.ACTIVA);
         when(reservaRepository.findActivasSolapadas(any(), any(), any())).thenReturn(List.of(existente));

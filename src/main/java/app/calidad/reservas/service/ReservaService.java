@@ -44,7 +44,10 @@ public class ReservaService {
     public ReservaResponse crearReserva(ReservaRequest request) {
         Usuario usuario = usuarioRepository.findById(request.usuarioId())
                 .orElseThrow(() -> new NoEncontradoException("Usuario no encontrado: " + request.usuarioId()));
-        Recurso recurso = recursoRepository.findById(request.recursoId())
+        // Bloqueo pesimista sobre el recurso: dos peticiones concurrentes para el mismo
+        // recurso y horario se serializan aquí; la segunda ve la reserva confirmada por
+        // la primera en findActivasSolapadas y recibe 409 en lugar de duplicarla.
+        Recurso recurso = recursoRepository.findByIdForUpdate(request.recursoId())
                 .orElseThrow(() -> new NoEncontradoException("Recurso no encontrado: " + request.recursoId()));
         if (!request.fechaFin().isAfter(request.fechaInicio())) {
             throw new ValidacionException("La fecha final debe ser posterior a la fecha inicial");

@@ -179,10 +179,10 @@ Cualquier cambio a esta sección debe replicarse en `frontend-plan.md §2` antes
 
 ### Fase B4 — Concurrencia (regla 5 bajo carga, base del escenario 500 usuarios)
 
-- [ ] B4.1 Endurecer `crearReserva` contra condiciones de carrera (decisión documentada en el README o
+- [x] B4.1 Endurecer `crearReserva` contra condiciones de carrera (decisión documentada en el README o
       en el código: bloqueo pesimista sobre el recurso + transacción, o constraint + reintento).
   - *Verificar:* test de concurrencia (hilos paralelos reservando el mismo recurso y horario) → exactamente 1 reserva ACTIVA y el resto 409.
-- [ ] B4.2 Documentar límites conocidos (H2 en memoria, sin clustering) como parte de la evidencia para
+- [x] B4.2 Documentar límites conocidos (H2 en memoria, sin clustering) como parte de la evidencia para
       la futura prueba JMeter de 500 usuarios.
   - *Verificar:* nota en README §7 o nuevo `docs/concurrency.md`.
 
