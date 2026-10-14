@@ -5,6 +5,8 @@ import RecursoCrearPage from './pages/RecursoCrearPage';
 import RecursoDetallePage from './pages/RecursoDetallePage';
 import RecursoEditarPage from './pages/RecursoEditarPage';
 import RecursosPage from './pages/RecursosPage';
+import ReservaCrearPage from './pages/ReservaCrearPage';
+import ReservaDetallePage from './pages/ReservaDetallePage';
 import ReservasPage from './pages/ReservasPage';
 import UsuarioDetallePage from './pages/UsuarioDetallePage';
 import UsuariosPage from './pages/UsuariosPage';
@@ -21,6 +23,8 @@ export default function App() {
         <Route path="/recursos/:id" element={<RecursoDetallePage />} />
         <Route path="/recursos/:id/editar" element={<RecursoEditarPage />} />
         <Route path="/reservas" element={<ReservasPage />} />
+        <Route path="/reservas/nueva" element={<ReservaCrearPage />} />
+        <Route path="/reservas/:id" element={<ReservaDetallePage />} />
         <Route path="/disponibilidad" element={<DisponibilidadPage />} />
         <Route path="*" element={<p>Página no encontrada.</p>} />
       </Routes>

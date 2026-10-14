@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { esCorreoValido, sinErrores, sinErroresRecurso, validarRecurso, validarUsuario } from './validacion';
+import { esCorreoValido, sinErrores, sinErroresRecurso, sinErroresReserva, validarRecurso, validarReserva, validarUsuario } from './validacion';
 
 describe('validarUsuario', () => {
   it('acepta un usuario válido', () => {
@@ -44,5 +44,34 @@ describe('validarRecurso', () => {
       expect(errores.capacidad).toBeDefined();
       expect(sinErroresRecurso(errores)).toBe(false);
     }
+  });
+});
+
+describe('validarReserva', () => {
+  const ahora = new Date('2026-10-14T10:00:00');
+  it('acepta un rango futuro válido', () => {
+    const errores = validarReserva(
+      { usuarioId: 1, recursoId: 1, fechaInicio: '2026-10-20T09:00', fechaFin: '2026-10-20T11:00' },
+      ahora,
+    );
+    expect(sinErroresReserva(errores)).toBe(true);
+  });
+
+  it('rechaza fin anterior o igual al inicio (regla 4)', () => {
+    for (const [inicio, fin] of [
+      ['2026-10-20T11:00', '2026-10-20T09:00'],
+      ['2026-10-20T09:00', '2026-10-20T09:00'],
+    ]) {
+      const errores = validarReserva({ usuarioId: 1, recursoId: 1, fechaInicio: inicio, fechaFin: fin }, ahora);
+      expect(errores.fechas).toBeDefined();
+    }
+  });
+
+  it('rechaza inicio en el pasado (regla 7)', () => {
+    const errores = validarReserva(
+      { usuarioId: 1, recursoId: 1, fechaInicio: '2026-10-10T09:00', fechaFin: '2026-10-10T11:00' },
+      ahora,
+    );
+    expect(errores.fechas).toBeDefined();
   });
 });

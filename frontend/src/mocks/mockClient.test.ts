@@ -102,3 +102,64 @@ describe('mock de recursos', () => {
     expect(enMantenimiento.disponible).toBe(false);
   });
 });
+
+describe('mock de reservas', () => {
+  const hueco = { usuarioId: 1, recursoId: 3, fechaInicio: '2026-10-22T09:00:00', fechaFin: '2026-10-22T10:00:00' };
+
+  it('crear en hueco libre deja estado ACTIVA', async () => {
+    const mock = createMockApi();
+    const creada = await mock.crearReserva(hueco);
+    expect(creada.estado).toBe('ACTIVA');
+    expect((await mock.obtenerReserva(creada.id)).id).toBe(creada.id);
+  });
+
+  it('cada regla de negocio devuelve su código', async () => {
+    const casos: Array<{ cuerpo: { usuarioId: number; recursoId: number; fechaInicio: string; fechaFin: string }; error: string }> = [
+      { cuerpo: { ...hueco, usuarioId: 2 }, error: 'USUARIO_INACTIVO' },
+      { cuerpo: { ...hueco, recursoId: 2 }, error: 'RECURSO_EN_MANTENIMIENTO' },
+      { cuerpo: { ...hueco, recursoId: 4 }, error: 'RECURSO_FUERA_DE_SERVICIO' },
+      {
+        cuerpo: { usuarioId: 1, recursoId: 1, fechaInicio: '2026-10-20T10:00:00', fechaFin: '2026-10-20T12:00:00' },
+        error: 'RESERVA_SOLAPADA',
+      },
+    ];
+    for (const { cuerpo, error } of casos) {
+      const mock = createMockApi();
+      await expect(mock.crearReserva(cuerpo)).rejects.toMatchObject({ status: 409, error });
+    }
+    // VALIDACION (regla 4) viaja con 400, se aserta aparte.
+    const mock = createMockApi();
+    await expect(
+      mock.crearReserva({ ...hueco, fechaInicio: '2026-10-22T10:00:00', fechaFin: '2026-10-22T09:00:00' }),
+    ).rejects.toMatchObject({ status: 400, error: 'VALIDACION' });
+  });
+
+  it('con 3 activas la cuarta lanza LIMITE_RESERVAS_ACTIVAS', async () => {
+    const mock = createMockApi();
+    await mock.crearReserva(hueco); // 3.ª activa del usuario 1 (ya trae 2)
+    await expect(mock.crearReserva({ ...hueco, fechaInicio: '2026-10-23T09:00:00', fechaFin: '2026-10-23T10:00:00' })).rejects.toMatchObject({
+      status: 409,
+      error: 'LIMITE_RESERVAS_ACTIVAS',
+    });
+  });
+
+  it('cancelar cambia a CANCELADA y recancelar avisa RESERVA_FINALIZADA', async () => {
+    const mock = createMockApi();
+    const cancelada = await mock.cancelarReserva(1);
+    expect(cancelada.estado).toBe('CANCELADA');
+    await expect(mock.cancelarReserva(1)).rejects.toMatchObject({
+      status: 409,
+      error: 'RESERVA_FINALIZADA',
+    });
+  });
+
+  it('consultas por usuario, recurso y fecha', async () => {
+    const mock = createMockApi();
+    expect((await mock.reservasPorUsuario(1)).length).toBe(2);
+    expect((await mock.reservasPorUsuario(1, 'ACTIVA')).length).toBe(2);
+    expect((await mock.reservasPorRecurso(1)).length).toBe(1);
+    expect((await mock.reservasPorFecha('2026-10-20')).length).toBe(2);
+    expect((await mock.reservasPorFecha('2026-10-21')).length).toBe(0);
+    await expect(mock.obtenerReserva(9999)).rejects.toMatchObject({ status: 404, error: 'NO_ENCONTRADO' });
+  });
+});

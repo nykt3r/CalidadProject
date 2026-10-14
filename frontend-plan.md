@@ -134,13 +134,13 @@ interface ApiError { status: number; error: string; message: string; }
 
 ### Fase F3 — Vista Reservas (filas 11–16 del §2.2, el corazón funcional)
 
-- [ ] F3.1 Formulario crear reserva (selectores de usuario ACTIVO y recurso DISPONIBLE, datetime-local
+- [x] F3.1 Formulario crear reserva (selectores de usuario ACTIVO y recurso DISPONIBLE, datetime-local
       inicio/fin): validación cliente (fin > inicio, inicio futuro) + **pre-chequeo de disponibilidad**
       antes de enviar; al 409 muestra el `message` del backend + sugerencia (otro horario/recurso).
-- [ ] F3.2 Listados por usuario, por recurso y agenda del día (`?fecha=`) con filtro de estado.
-- [ ] F3.3 Detalle + cancelar (DELETE con confirmación; tras cancelar muestra CANCELADA; caso
+- [x] F3.2 Listados por usuario, por recurso y agenda del día (`?fecha=`) con filtro de estado.
+- [x] F3.3 Detalle + cancelar (DELETE con confirmación; tras cancelar muestra CANCELADA; caso
       `RESERVA_FINALIZADA` con aviso).
-- [ ] F3.4 Regla visible de "máx. 3 activas": al crear para un usuario con 3 ACTIVAs, la UI anticipa
+- [x] F3.4 Regla visible de "máx. 3 activas": al crear para un usuario con 3 ACTIVAs, la UI anticipa
       el aviso (y respeta el 409 del backend como árbitro final).
   - *Verificar (contra mocks):* crear → aparece en agenda; solapar a propósito → banner con mensaje;
     cancelar → estado cambia; cada código del §2.3 mockeado se muestra donde corresponde.

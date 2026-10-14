@@ -24,3 +24,7 @@ form.form label { display: grid; gap: 0.2rem; font-size: 0.9rem; }
 form.form input, form.form select { padding: 0.4rem; font-size: 0.9rem; }
 .toolbar { display: flex; gap: 0.5rem; align-items: center; margin: 0.6rem 0; flex-wrap: wrap; }
 .error-campo { color: #842029; font-size: 0.8rem; }
+.banner-aviso {
+  background: #fff8e1; border: 1px solid #f0d060; color: #664d03;
+  padding: 0.6rem; border-radius: 4px; margin: 0.6rem 0;
+}

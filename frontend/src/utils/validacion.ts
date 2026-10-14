@@ -1,7 +1,7 @@
 // Validaciones de formularios en cliente, espejo del backend (contrato §2.2 fila 1:
 // nombre/documento/correo obligatorios, correo con formato; unicidad la arbitra el backend).
 
-import type { RecursoRequest, UsuarioRequest } from '../api/types';
+import type { RecursoRequest, ReservaRequest, UsuarioRequest } from '../api/types';
 
 export interface ErroresUsuario {
   nombre?: string;
@@ -45,4 +45,26 @@ export function validarRecurso(body: RecursoRequest): ErroresRecurso {
 
 export function sinErroresRecurso(errores: ErroresRecurso): boolean {
   return errores.nombre === undefined && errores.capacidad === undefined;
+}
+
+export interface ErroresReserva {
+  fechas?: string;
+}
+
+export function validarReserva(body: ReservaRequest, ahora: Date = new Date()): ErroresReserva {
+  const errores: ErroresReserva = {};
+  const inicio = new Date(body.fechaInicio);
+  const fin = new Date(body.fechaFin);
+  if (Number.isNaN(inicio.getTime()) || Number.isNaN(fin.getTime())) {
+    errores.fechas = 'Fechas inválidas';
+  } else if (!(fin > inicio)) {
+    errores.fechas = 'La fecha de fin debe ser posterior al inicio (regla 4)';
+  } else if (!(inicio > ahora)) {
+    errores.fechas = 'El inicio debe estar en el futuro (regla 7)';
+  }
+  return errores;
+}
+
+export function sinErroresReserva(errores: ErroresReserva): boolean {
+  return errores.fechas === undefined;
 }
