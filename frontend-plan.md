@@ -149,11 +149,11 @@ interface ApiError { status: number; error: string; message: string; }
 
 ### Fase F4 — Cierre QA frontend
 
-- [ ] F4.1 Tests Vitest del cliente API (éxito + cada error del catálogo) y de validaciones de formularios.
+- [x] F4.1 Tests Vitest del cliente API (éxito + cada error del catálogo) y de validaciones de formularios.
   - *Verificar:* `npm test` verde.
-- [ ] F4.2 Checklist manual por vista (documentado en `frontend/README.md`): sin errores de consola,
+- [x] F4.2 Checklist manual por vista (documentado en `frontend/README.md`): sin errores de consola,
       estados de carga/vacío/error en cada tabla, formulario que no pierde datos ante un 409.
-- [ ] F4.3 `npm run build` + previsualizar (`npm run preview`) sirviendo el `dist/` sin errores.
+- [x] F4.3 `npm run build` + previsualizar (`npm run preview`) sirviendo el `dist/` sin errores.
 
 **DoD F4 (= DoD del frontend standalone):** build verde + tests verdes + checklist completo contra mocks.
 

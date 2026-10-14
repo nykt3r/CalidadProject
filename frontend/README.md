@@ -27,8 +27,25 @@ npm test         # tests Vitest (vitest run)
 - `src/pages/` — Usuarios, Recursos, Reservas, Disponibilidad.
 - `src/components/` — layout con navegación, banner de error.
 
-## Checklist manual por vista (F4.2, parcial F0)
+## Checklist manual por vista (F4.2)
 
-- [ ] Navegar las 4 rutas sin recarga ni errores en consola.
-- [ ] Cada tabla muestra estados de carga / vacío / error.
-- [ ] Disponibilidad muestra ambos casos (libre / ocupado).
+Verificado contra mocks (`VITE_USE_MOCKS=true`, `npm run dev` en `:5173`).
+En cada vista: abrir la consola del navegador y confirmar cero errores.
+
+- [ ] Navegación: las 4 rutas (`/usuarios`, `/recursos`, `/reservas`, `/disponibilidad`)
+      cambian sin recarga; el indicador muestra `mock`.
+- [ ] Usuarios: tabla con filtro Todos/ACTIVO/INACTIVO; crear aparece en la tabla;
+      duplicar documento/correo marca el campo sin perder datos; detalle con
+      activar/inactivar (con confirmación); id inexistente muestra "no encontrado".
+- [ ] Recursos: filtros `?estado=`/`?tipo=` visibles en la URL; crear/editar con
+      validación (capacidad > 0); cambio de estado con selector y confirmación;
+      id inexistente muestra "no encontrado".
+- [ ] Disponibilidad: selector de recurso + rango; caso libre muestra "Disponible";
+      caso ocupado muestra "No disponible" con la tabla de solapadas.
+- [ ] Reservas: crear muestra aviso anticipado con 3 activas y pre-chequea
+      disponibilidad; solapar a propósito muestra el banner con el mensaje;
+      cancelar cambia a CANCELADA; recancelar muestra el aviso `RESERVA_FINALIZADA`;
+      modos por día / usuario / recurso con filtros.
+- [ ] Formularios que no pierden datos ante un 409 (usuario, recurso, reserva).
+- [ ] Estados de carga / vacío / error (con reintento) en cada tabla.
+- [ ] `npm run build` + `npm run preview`: el `dist/` sirve sin errores.
