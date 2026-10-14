@@ -1,6 +1,6 @@
 package app.calidad.reservas.controller;
 
-import app.calidad.reservas.entity.Usuario;
+import app.calidad.reservas.dto.UsuarioResponse;
 import app.calidad.reservas.service.UsuarioService;
 import java.util.List;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,7 +18,7 @@ public class UsuarioController {
     }
 
     @GetMapping
-    public List<Usuario> listarUsuarios() {
+    public List<UsuarioResponse> listarUsuarios() {
         return usuarioService.listarUsuarios();
     }
 }

@@ -1,6 +1,7 @@
 package app.calidad.reservas.service;
 
-import app.calidad.reservas.entity.Usuario;
+import app.calidad.reservas.dto.UsuarioResponse;
+import app.calidad.reservas.mapper.UsuarioMapper;
 import app.calidad.reservas.repository.UsuarioRepository;
 import java.util.List;
 import org.springframework.stereotype.Service;
@@ -14,7 +15,9 @@ public class UsuarioService {
         this.usuarioRepository = usuarioRepository;
     }
 
-    public List<Usuario> listarUsuarios() {
-        return usuarioRepository.findAll();
+    public List<UsuarioResponse> listarUsuarios() {
+        return usuarioRepository.findAll().stream()
+                .map(UsuarioMapper::aResponse)
+                .toList();
     }
 }

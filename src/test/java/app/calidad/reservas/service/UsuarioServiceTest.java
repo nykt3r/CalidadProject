@@ -3,6 +3,7 @@ package app.calidad.reservas.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
+import app.calidad.reservas.dto.UsuarioResponse;
 import app.calidad.reservas.entity.EstadoUsuario;
 import app.calidad.reservas.entity.Usuario;
 import app.calidad.reservas.repository.UsuarioRepository;
@@ -24,21 +25,25 @@ class UsuarioServiceTest {
 
     @Test
     void listarUsuariosDebeRetornarTodosLosUsuarios() {
-        List<Usuario> esperados = List.of(
+        List<Usuario> entidades = List.of(
                 new Usuario("Ana López", "123456", "ana@correo.com", EstadoUsuario.ACTIVO),
                 new Usuario("Luis Pérez", "654321", "luis@correo.com", EstadoUsuario.INACTIVO));
-        when(usuarioRepository.findAll()).thenReturn(esperados);
+        when(usuarioRepository.findAll()).thenReturn(entidades);
 
-        List<Usuario> resultado = usuarioService.listarUsuarios();
+        List<UsuarioResponse> resultado = usuarioService.listarUsuarios();
 
-        assertThat(resultado).hasSize(2).isEqualTo(esperados);
+        assertThat(resultado).hasSize(2);
+        assertThat(resultado.get(0).nombre()).isEqualTo("Ana López");
+        assertThat(resultado.get(0).estado()).isEqualTo(EstadoUsuario.ACTIVO);
+        assertThat(resultado.get(1).nombre()).isEqualTo("Luis Pérez");
+        assertThat(resultado.get(1).estado()).isEqualTo(EstadoUsuario.INACTIVO);
     }
 
     @Test
     void listarUsuariosDebeRetornarListaVaciaCuandoNoHayUsuarios() {
         when(usuarioRepository.findAll()).thenReturn(List.of());
 
-        List<Usuario> resultado = usuarioService.listarUsuarios();
+        List<UsuarioResponse> resultado = usuarioService.listarUsuarios();
 
         assertThat(resultado).isEmpty();
     }
