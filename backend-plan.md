@@ -147,12 +147,12 @@ Cualquier cambio a esta sección debe replicarse en `frontend-plan.md §2` antes
 
 ### Fase B2 — Recursos (endpoints 5–9 + E1)
 
-- [ ] B2.1 `RecursoService` CRUD + `cambiarEstado` + filtros por estado/tipo.
-- [ ] B2.2 `PUT /recursos/{id}` (E1, modificación total) + controllers POST/GET/GET{id}/PATCH estado.
-- [ ] B2.3 Disponibilidad: `GET /recursos/{id}/disponibilidad?desde=&hasta=` — `disponible=false` si
+- [x] B2.1 `RecursoService` CRUD + `cambiarEstado` + filtros por estado/tipo.
+- [x] B2.2 `PUT /recursos/{id}` (E1, modificación total) + controllers POST/GET/GET{id}/PATCH estado.
+- [x] B2.3 Disponibilidad: `GET /recursos/{id}/disponibilidad?desde=&hasta=` — `disponible=false` si
       estado ≠ DISPONIBLE o existe reserva ACTIVA solapada (`inicio < hasta && fin > desde`).
   - *Verificar:* recurso en MANTENIMIENTO → disponible=false; recurso DISPONIBLE con reserva solapada → false + lista la reserva; rango libre → true.
-- [ ] B2.4 Tests unitarios + feature Cucumber `recurso.feature` (CRUD, estados, disponibilidad, 404/400).
+- [x] B2.4 Tests unitarios + feature Cucumber `recurso.feature` (CRUD, estados, disponibilidad, 404/400).
   - *Verificar:* `./gradlew test acceptanceTest` verde.
 
 **DoD B2:** contrato §2 filas 5–9 y E1 cumplidos y probados.
