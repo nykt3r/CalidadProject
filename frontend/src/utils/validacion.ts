@@ -1,7 +1,7 @@
 // Validaciones de formularios en cliente, espejo del backend (contrato §2.2 fila 1:
 // nombre/documento/correo obligatorios, correo con formato; unicidad la arbitra el backend).
 
-import type { UsuarioRequest } from '../api/types';
+import type { RecursoRequest, UsuarioRequest } from '../api/types';
 
 export interface ErroresUsuario {
   nombre?: string;
@@ -27,4 +27,22 @@ export function validarUsuario(body: UsuarioRequest): ErroresUsuario {
 
 export function sinErrores(errores: ErroresUsuario): boolean {
   return errores.nombre === undefined && errores.documento === undefined && errores.correo === undefined;
+}
+
+export interface ErroresRecurso {
+  nombre?: string;
+  capacidad?: string;
+}
+
+export function validarRecurso(body: RecursoRequest): ErroresRecurso {
+  const errores: ErroresRecurso = {};
+  if (body.nombre.trim().length === 0) errores.nombre = 'El nombre es obligatorio';
+  if (!Number.isFinite(body.capacidad) || body.capacidad <= 0) {
+    errores.capacidad = 'La capacidad debe ser mayor que 0';
+  }
+  return errores;
+}
+
+export function sinErroresRecurso(errores: ErroresRecurso): boolean {
+  return errores.nombre === undefined && errores.capacidad === undefined;
 }

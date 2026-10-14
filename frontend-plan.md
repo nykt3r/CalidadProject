@@ -122,10 +122,10 @@ interface ApiError { status: number; error: string; message: string; }
 
 ### Fase F2 — Vista Recursos (filas 5–10 del §2.2)
 
-- [ ] F2.1 Tabla con filtros por estado y tipo (query params reales al backend, no solo cliente).
-- [ ] F2.2 Formularios crear (POST) y editar (PUT) con validación (capacidad > 0, campos obligatorios).
-- [ ] F2.3 Cambio de estado (PATCH) con selector + confirmación.
-- [ ] F2.4 Vista disponibilidad: selector de recurso + rango fechas → muestra `disponible` y lista de
+- [x] F2.1 Tabla con filtros por estado y tipo (query params reales al backend, no solo cliente).
+- [x] F2.2 Formularios crear (POST) y editar (PUT) con validación (capacidad > 0, campos obligatorios).
+- [x] F2.3 Cambio de estado (PATCH) con selector + confirmación.
+- [x] F2.4 Vista disponibilidad: selector de recurso + rango fechas → muestra `disponible` y lista de
       reservas solapadas (GET disponibilidad).
   - *Verificar (contra mocks):* CRUD completo, filtros que cambian la URL/params, disponibilidad que
     muestra ambos casos (libre/ocupado).

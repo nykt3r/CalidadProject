@@ -45,3 +45,60 @@ describe('mock de usuarios', () => {
     expect((await mock.obtenerUsuario(1)).estado).toBe('INACTIVO');
   });
 });
+
+describe('mock de recursos', () => {
+  it('CRUD completo: crear → editar → consultar', async () => {
+    const mock = createMockApi();
+    const creado = await mock.crearRecurso({
+      nombre: 'Sala X',
+      descripcion: 'Sala demo',
+      tipo: 'SALA_REUNIONES',
+      capacidad: 6,
+    });
+    expect(creado.estado).toBe('DISPONIBLE');
+    const editado = await mock.modificarRecurso(creado.id, {
+      nombre: 'Sala X',
+      descripcion: 'Sala demo',
+      tipo: 'SALA_REUNIONES',
+      capacidad: 10,
+    });
+    expect(editado.capacidad).toBe(10);
+    expect((await mock.obtenerRecurso(creado.id)).capacidad).toBe(10);
+  });
+
+  it('rechaza capacidad no positiva con VALIDACION 400', async () => {
+    const mock = createMockApi();
+    await expect(
+      mock.crearRecurso({ nombre: 'X', descripcion: '', tipo: 'OTRO', capacidad: 0 }),
+    ).rejects.toMatchObject({ status: 400, error: 'VALIDACION' });
+  });
+
+  it('filtros por estado y tipo reducen el listado', async () => {
+    const mock = createMockApi();
+    const todos = await mock.listarRecursos();
+    const disponibles = await mock.listarRecursos({ estado: 'DISPONIBLE' });
+    expect(disponibles.length).toBeLessThan(todos.length);
+    expect(disponibles.every((r) => r.estado === 'DISPONIBLE')).toBe(true);
+    const labs = await mock.listarRecursos({ tipo: 'LABORATORIO' });
+    expect(labs.length).toBeGreaterThan(0);
+    expect(labs.every((r) => r.tipo === 'LABORATORIO')).toBe(true);
+  });
+
+  it('cambiar estado se refleja en la consulta', async () => {
+    const mock = createMockApi();
+    await mock.cambiarEstadoRecurso(1, 'MANTENIMIENTO');
+    expect((await mock.obtenerRecurso(1)).estado).toBe('MANTENIMIENTO');
+  });
+
+  it('disponibilidad muestra ocupado con solapadas y libre sin ellas', async () => {
+    const mock = createMockApi();
+    const ocupada = await mock.consultarDisponibilidad(1, '2026-10-20T09:00:00', '2026-10-20T11:00:00');
+    expect(ocupada.disponible).toBe(false);
+    expect(ocupada.reservasSolapadas.length).toBeGreaterThan(0);
+    const libre = await mock.consultarDisponibilidad(1, '2026-10-21T09:00:00', '2026-10-21T11:00:00');
+    expect(libre.disponible).toBe(true);
+    expect(libre.reservasSolapadas).toEqual([]);
+    const enMantenimiento = await mock.consultarDisponibilidad(2, '2026-10-21T09:00:00', '2026-10-21T10:00:00');
+    expect(enMantenimiento.disponible).toBe(false);
+  });
+});

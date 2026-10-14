@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { esCorreoValido, sinErrores, validarUsuario } from './validacion';
+import { esCorreoValido, sinErrores, sinErroresRecurso, validarRecurso, validarUsuario } from './validacion';
 
 describe('validarUsuario', () => {
   it('acepta un usuario válido', () => {
@@ -22,6 +22,27 @@ describe('validarUsuario', () => {
     for (const correo of ['sin-arroba', 'a@', '@dom.com', 'a@b']) {
       expect(esCorreoValido(correo)).toBe(false);
       expect(validarUsuario({ nombre: 'N', documento: 'D', correo }).correo).toBeDefined();
+    }
+  });
+});
+
+describe('validarRecurso', () => {
+  it('acepta un recurso válido', () => {
+    const errores = validarRecurso({
+      nombre: 'Lab 101',
+      descripcion: 'Laboratorio',
+      tipo: 'LABORATORIO',
+      capacidad: 30,
+    });
+    expect(sinErroresRecurso(errores)).toBe(true);
+  });
+
+  it('exige nombre y capacidad mayor que 0', () => {
+    expect(validarRecurso({ nombre: ' ', descripcion: '', tipo: 'OTRO', capacidad: 10 }).nombre).toBeDefined();
+    for (const capacidad of [0, -5, Number.NaN]) {
+      const errores = validarRecurso({ nombre: 'N', descripcion: '', tipo: 'OTRO', capacidad });
+      expect(errores.capacidad).toBeDefined();
+      expect(sinErroresRecurso(errores)).toBe(false);
     }
   });
 });
