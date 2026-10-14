@@ -165,9 +165,9 @@ class RecursoServiceTest {
     void disponibilidadEnMantenimientoDebeSerFalse() {
         Recurso recurso = new Recurso("Auditorio", null, TipoRecurso.AUDITORIO, 200, EstadoRecurso.MANTENIMIENTO);
         when(recursoRepository.findById(2L)).thenReturn(Optional.of(recurso));
-        when(reservaRepository.findByRecursoIdAndEstado(2L, EstadoReserva.ACTIVA)).thenReturn(List.of());
         LocalDateTime desde = LocalDateTime.of(2026, 10, 20, 9, 0, 0);
         LocalDateTime hasta = LocalDateTime.of(2026, 10, 20, 11, 0, 0);
+        when(reservaRepository.findActivasSolapadas(2L, desde, hasta)).thenReturn(List.of());
 
         DisponibilidadResponse resultado = recursoService.consultarDisponibilidad(2L, desde, hasta);
 
@@ -180,14 +180,12 @@ class RecursoServiceTest {
         Recurso recurso = recursoDisponible();
         Reserva solapada = reservaActiva(recurso,
                 LocalDateTime.of(2026, 10, 20, 9, 0, 0), LocalDateTime.of(2026, 10, 20, 11, 0, 0));
-        Reserva fueraDeRango = reservaActiva(recurso,
-                LocalDateTime.of(2026, 10, 21, 9, 0, 0), LocalDateTime.of(2026, 10, 21, 11, 0, 0));
         when(recursoRepository.findById(1L)).thenReturn(Optional.of(recurso));
-        when(reservaRepository.findByRecursoIdAndEstado(1L, EstadoReserva.ACTIVA))
-                .thenReturn(List.of(solapada, fueraDeRango));
+        LocalDateTime desde = LocalDateTime.of(2026, 10, 20, 10, 0, 0);
+        LocalDateTime hasta = LocalDateTime.of(2026, 10, 20, 12, 0, 0);
+        when(reservaRepository.findActivasSolapadas(1L, desde, hasta)).thenReturn(List.of(solapada));
 
-        DisponibilidadResponse resultado = recursoService.consultarDisponibilidad(1L,
-                LocalDateTime.of(2026, 10, 20, 10, 0, 0), LocalDateTime.of(2026, 10, 20, 12, 0, 0));
+        DisponibilidadResponse resultado = recursoService.consultarDisponibilidad(1L, desde, hasta);
 
         assertThat(resultado.disponible()).isFalse();
         assertThat(resultado.reservasSolapadas()).hasSize(1);
@@ -197,10 +195,11 @@ class RecursoServiceTest {
     void disponibilidadEnRangoLibreDebeSerTrue() {
         Recurso recurso = recursoDisponible();
         when(recursoRepository.findById(1L)).thenReturn(Optional.of(recurso));
-        when(reservaRepository.findByRecursoIdAndEstado(1L, EstadoReserva.ACTIVA)).thenReturn(List.of());
+        LocalDateTime desde = LocalDateTime.of(2026, 10, 20, 12, 0, 0);
+        LocalDateTime hasta = LocalDateTime.of(2026, 10, 20, 14, 0, 0);
+        when(reservaRepository.findActivasSolapadas(1L, desde, hasta)).thenReturn(List.of());
 
-        DisponibilidadResponse resultado = recursoService.consultarDisponibilidad(1L,
-                LocalDateTime.of(2026, 10, 20, 12, 0, 0), LocalDateTime.of(2026, 10, 20, 14, 0, 0));
+        DisponibilidadResponse resultado = recursoService.consultarDisponibilidad(1L, desde, hasta);
 
         assertThat(resultado.recursoId()).isEqualTo(1L);
         assertThat(resultado.disponible()).isTrue();

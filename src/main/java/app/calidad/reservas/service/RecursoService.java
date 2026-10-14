@@ -5,7 +5,6 @@ import app.calidad.reservas.dto.DisponibilidadResponse;
 import app.calidad.reservas.dto.RecursoRequest;
 import app.calidad.reservas.dto.RecursoResponse;
 import app.calidad.reservas.entity.EstadoRecurso;
-import app.calidad.reservas.entity.EstadoReserva;
 import app.calidad.reservas.entity.Recurso;
 import app.calidad.reservas.entity.Reserva;
 import app.calidad.reservas.entity.TipoRecurso;
@@ -87,9 +86,8 @@ public class RecursoService {
         if (desde == null || hasta == null || !desde.isBefore(hasta)) {
             throw new ValidacionException("El rango de disponibilidad debe cumplir 'desde' anterior a 'hasta'");
         }
-        List<Reserva> solapadas = reservaRepository.findByRecursoIdAndEstado(id, EstadoReserva.ACTIVA).stream()
-                .filter(r -> r.getFechaInicio().isBefore(hasta) && r.getFechaFin().isAfter(desde))
-                .toList();
+        List<Reserva> solapadas =
+                reservaRepository.findActivasSolapadas(id, desde, hasta);
         boolean disponible = recurso.getEstado() == EstadoRecurso.DISPONIBLE && solapadas.isEmpty();
         return new DisponibilidadResponse(
                 id, desde, hasta, disponible, solapadas.stream().map(ReservaMapper::aResponse).toList());

@@ -159,19 +159,19 @@ Cualquier cambio a esta sección debe replicarse en `frontend-plan.md §2` antes
 
 ### Fase B3 — Reservas (endpoints 10–14 + E2, las 8 reglas)
 
-- [ ] B3.1 `ReservaService.crearReserva` aplicando en orden: existe usuario/recurso (404) →
+- [x] B3.1 `ReservaService.crearReserva` aplicando en orden: existe usuario/recurso (404) →
       regla 4 (fin > inicio, 400) → regla 7 (inicio no pasado, 400) → regla 1 (usuario ACTIVO, 409) →
       reglas 2–3 (recurso DISPONIBLE, 409) → regla 8 (≤3 ACTIVAs del usuario, 409) →
       regla 5 (sin solapamiento ACTIVA, 409) → persiste en ACTIVA.
-- [ ] B3.2 `cancelarReserva`: ACTIVA → CANCELADA (200); FINALIZADA o CANCELADA → 409 `RESERVA_FINALIZADA`
+- [x] B3.2 `cancelarReserva`: ACTIVA → CANCELADA (200); FINALIZADA o CANCELADA → 409 `RESERVA_FINALIZADA`
       (regla 6). `DELETE` nunca borra físicamente.
-- [ ] B3.3 Consultas: `GET /reservas/{id}`, `/reservas/usuario/{usuarioId}?estado=`,
+- [x] B3.3 Consultas: `GET /reservas/{id}`, `/reservas/usuario/{usuarioId}?estado=`,
       `/reservas/recurso/{recursoId}?desde=&hasta=`, `/reservas?fecha=` (E2, reservas que intersectan ese día).
   - *Verificar por regla (curl):* una prueba que dispare cada código del §2.3 y devuelva el cuerpo exacto.
-- [ ] B3.4 Query de solapamiento en `ReservaRepository`
+- [x] B3.4 Query de solapamiento en `ReservaRepository`
       (`findActivasSolapadas(recursoId, inicio, fin)`) + `countByUsuarioIdAndEstado` para la regla 8
       (método ya existente, ahora consumirlo).
-- [ ] B3.5 Tests unitarios por regla (uno por regla como mínimo, Mockito) + features Cucumber
+- [x] B3.5 Tests unitarios por regla (uno por regla como mínimo, Mockito) + features Cucumber
       `reservaCreacion.feature` (camino feliz + reglas 1–5, 7, 8) y `reservaCancelacion.feature` (regla 6).
   - *Verificar:* `./gradlew test acceptanceTest` verde.
 
