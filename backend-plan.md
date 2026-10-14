@@ -135,11 +135,11 @@ Cualquier cambio a esta sección debe replicarse en `frontend-plan.md §2` antes
 
 ### Fase B1 — Usuarios (endpoints 1–4)
 
-- [ ] B1.1 `UsuarioService.crearUsuario` (valida duplicados documento/correo → `DUPLICADO 409`).
-- [ ] B1.2 `UsuarioService.obtenerPorId` (`NO_ENCONTRADO 404`) y `cambiarEstado` (PATCH).
-- [ ] B1.3 `POST /usuarios` (201), `GET /usuarios/{id}`, `PATCH /usuarios/{id}/estado` en el controller.
+- [x] B1.1 `UsuarioService.crearUsuario` (valida duplicados documento/correo → `DUPLICADO 409`).
+- [x] B1.2 `UsuarioService.obtenerPorId` (`NO_ENCONTRADO 404`) y `cambiarEstado` (PATCH).
+- [x] B1.3 `POST /usuarios` (201), `GET /usuarios/{id}`, `PATCH /usuarios/{id}/estado` en el controller.
   - *Verificar por endpoint:* curl crea (201) → consulta (200) → inactiva (200) → consulta muestra INACTIVO; duplicar correo → 409 DUPLICADO; id inexistente → 404.
-- [ ] B1.4 Tests unitarios (Mockito) de cada método nuevo + feature Cucumber `usuario.feature`
+- [x] B1.4 Tests unitarios (Mockito) de cada método nuevo + feature Cucumber `usuario.feature`
       (crear, consultar por id, cambiar estado, errores 404/409).
   - *Verificar:* `./gradlew test acceptanceTest` verde.
 
