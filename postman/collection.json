@@ -1,0 +1,266 @@
+{
+  "info": {
+    "name": "Reservas API",
+    "description": "Colección de la API de Reservas (contrato v1 del backend-plan.md §2). 16 endpoints + 9 casos del catálogo de errores (§2.3).",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:8080" }
+  ],
+  "item": [
+    {
+      "name": "Usuarios",
+      "item": [
+        {
+          "name": "Crear usuario",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/usuarios",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"nombre\": \"Marta Ruiz\",\n  \"documento\": \"DOC-010\",\n  \"correo\": \"marta@example.com\"\n}" }
+          },
+          "response": [
+            { "name": "201 creado", "code": 201, "status": "Created",
+              "body": "{\n  \"id\": 3,\n  \"nombre\": \"Marta Ruiz\",\n  \"documento\": \"DOC-010\",\n  \"correo\": \"marta@example.com\",\n  \"estado\": \"ACTIVO\"\n}" }
+          ]
+        },
+        {
+          "name": "Listar usuarios",
+          "request": { "method": "GET", "url": "{{baseUrl}}/usuarios" },
+          "response": [
+            { "name": "200 lista", "code": 200, "status": "OK",
+              "body": "[\n  {\"id\": 1, \"nombre\": \"Ana García\", \"documento\": \"DOC-001\", \"correo\": \"ana@example.com\", \"estado\": \"ACTIVO\"},\n  {\"id\": 2, \"nombre\": \"Luis Pérez\", \"documento\": \"DOC-002\", \"correo\": \"luis@example.com\", \"estado\": \"INACTIVO\"}\n]" }
+          ]
+        },
+        {
+          "name": "Consultar usuario por id",
+          "request": { "method": "GET", "url": "{{baseUrl}}/usuarios/1" }
+        },
+        {
+          "name": "Cambiar estado de usuario",
+          "request": {
+            "method": "PATCH",
+            "url": "{{baseUrl}}/usuarios/1/estado",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"estado\": \"INACTIVO\"\n}" }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Recursos",
+      "item": [
+        {
+          "name": "Crear recurso",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/recursos",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"nombre\": \"Lab 102\",\n  \"descripcion\": \"Laboratorio nuevo\",\n  \"tipo\": \"LABORATORIO\",\n  \"capacidad\": 25\n}" }
+          },
+          "response": [
+            { "name": "201 creado", "code": 201, "status": "Created",
+              "body": "{\n  \"id\": 4,\n  \"nombre\": \"Lab 102\",\n  \"descripcion\": \"Laboratorio nuevo\",\n  \"tipo\": \"LABORATORIO\",\n  \"capacidad\": 25,\n  \"estado\": \"DISPONIBLE\"\n}" }
+          ]
+        },
+        {
+          "name": "Listar recursos",
+          "request": { "method": "GET", "url": "{{baseUrl}}/recursos" }
+        },
+        {
+          "name": "Listar recursos con filtros",
+          "request": { "method": "GET", "url": "{{baseUrl}}/recursos?estado=DISPONIBLE&tipo=LABORATORIO" }
+        },
+        {
+          "name": "Consultar recurso por id",
+          "request": { "method": "GET", "url": "{{baseUrl}}/recursos/1" }
+        },
+        {
+          "name": "Modificar recurso (PUT)",
+          "request": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/recursos/1",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"nombre\": \"Lab 101\",\n  \"descripcion\": \"Remodelado\",\n  \"tipo\": \"LABORATORIO\",\n  \"capacidad\": 35\n}" }
+          }
+        },
+        {
+          "name": "Cambiar estado de recurso",
+          "request": {
+            "method": "PATCH",
+            "url": "{{baseUrl}}/recursos/1/estado",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"estado\": \"MANTENIMIENTO\"\n}" }
+          }
+        },
+        {
+          "name": "Consultar disponibilidad",
+          "request": { "method": "GET", "url": "{{baseUrl}}/recursos/1/disponibilidad?desde=2026-10-20T12:00:00&hasta=2026-10-20T14:00:00" },
+          "response": [
+            { "name": "200 disponible", "code": 200, "status": "OK",
+              "body": "{\n  \"recursoId\": 1,\n  \"desde\": \"2026-10-20T12:00:00\",\n  \"hasta\": \"2026-10-20T14:00:00\",\n  \"disponible\": true,\n  \"reservasSolapadas\": []\n}" }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Reservas",
+      "item": [
+        {
+          "name": "Crear reserva",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/reservas",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"usuarioId\": 1,\n  \"recursoId\": 1,\n  \"fechaInicio\": \"2030-11-10T09:00:00\",\n  \"fechaFin\": \"2030-11-10T11:00:00\"\n}" }
+          },
+          "response": [
+            { "name": "201 creada", "code": 201, "status": "Created",
+              "body": "{\n  \"id\": 2,\n  \"usuario\": {\"id\": 1, \"nombre\": \"Ana García\", \"estado\": \"ACTIVO\"},\n  \"recurso\": {\"id\": 1, \"nombre\": \"Lab 101\", \"estado\": \"DISPONIBLE\"},\n  \"fechaInicio\": \"2030-11-10T09:00:00\",\n  \"fechaFin\": \"2030-11-10T11:00:00\",\n  \"estado\": \"ACTIVA\",\n  \"fechaCreacion\": \"2026-10-14T10:00:00\"\n}" }
+          ]
+        },
+        {
+          "name": "Consultar reserva por id",
+          "request": { "method": "GET", "url": "{{baseUrl}}/reservas/1" }
+        },
+        {
+          "name": "Cancelar reserva",
+          "request": { "method": "DELETE", "url": "{{baseUrl}}/reservas/1" }
+        },
+        {
+          "name": "Reservas por usuario",
+          "request": { "method": "GET", "url": "{{baseUrl}}/reservas/usuario/1" }
+        },
+        {
+          "name": "Reservas por usuario con estado",
+          "request": { "method": "GET", "url": "{{baseUrl}}/reservas/usuario/1?estado=ACTIVA" }
+        },
+        {
+          "name": "Reservas por recurso",
+          "request": { "method": "GET", "url": "{{baseUrl}}/reservas/recurso/1" }
+        },
+        {
+          "name": "Reservas por recurso en rango",
+          "request": { "method": "GET", "url": "{{baseUrl}}/reservas/recurso/1?desde=2026-10-20T00:00:00&hasta=2026-10-21T00:00:00" }
+        },
+        {
+          "name": "Reservas por fecha",
+          "request": { "method": "GET", "url": "{{baseUrl}}/reservas?fecha=2026-10-20" }
+        }
+      ]
+    },
+    {
+      "name": "Catálogo de errores",
+      "description": "Un caso por código del §2.3. Todos devuelven {status, error, message}.",
+      "item": [
+        {
+          "name": "VALIDACION 400 (fechas)",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/reservas",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"usuarioId\": 1,\n  \"recursoId\": 1,\n  \"fechaInicio\": \"2020-01-01T09:00:00\",\n  \"fechaFin\": \"2020-01-01T11:00:00\"\n}" }
+          },
+          "response": [
+            { "name": "400", "code": 400, "status": "Bad Request",
+              "body": "{\n  \"status\": 400,\n  \"error\": \"VALIDACION\",\n  \"message\": \"No se pueden realizar reservas en fechas pasadas\"\n}" }
+          ]
+        },
+        {
+          "name": "NO_ENCONTRADO 404",
+          "request": { "method": "GET", "url": "{{baseUrl}}/reservas/9999" },
+          "response": [
+            { "name": "404", "code": 404, "status": "Not Found",
+              "body": "{\n  \"status\": 404,\n  \"error\": \"NO_ENCONTRADO\",\n  \"message\": \"Reserva no encontrada: 9999\"\n}" }
+          ]
+        },
+        {
+          "name": "DUPLICADO 409",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/usuarios",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"nombre\": \"Otro\",\n  \"documento\": \"DOC-099\",\n  \"correo\": \"ana@example.com\"\n}" }
+          },
+          "response": [
+            { "name": "409", "code": 409, "status": "Conflict",
+              "body": "{\n  \"status\": 409,\n  \"error\": \"DUPLICADO\",\n  \"message\": \"El correo ya está registrado: ana@example.com\"\n}" }
+          ]
+        },
+        {
+          "name": "USUARIO_INACTIVO 409 (regla 1)",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/reservas",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"usuarioId\": 2,\n  \"recursoId\": 1,\n  \"fechaInicio\": \"2030-11-10T09:00:00\",\n  \"fechaFin\": \"2030-11-10T11:00:00\"\n}" }
+          },
+          "response": [
+            { "name": "409", "code": 409, "status": "Conflict",
+              "body": "{\n  \"status\": 409,\n  \"error\": \"USUARIO_INACTIVO\",\n  \"message\": \"El usuario no está activo: 2\"\n}" }
+          ]
+        },
+        {
+          "name": "RECURSO_EN_MANTENIMIENTO 409 (regla 2)",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/reservas",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"usuarioId\": 1,\n  \"recursoId\": 2,\n  \"fechaInicio\": \"2030-11-10T09:00:00\",\n  \"fechaFin\": \"2030-11-10T11:00:00\"\n}" }
+          },
+          "response": [
+            { "name": "409", "code": 409, "status": "Conflict",
+              "body": "{\n  \"status\": 409,\n  \"error\": \"RECURSO_EN_MANTENIMIENTO\",\n  \"message\": \"El recurso está en mantenimiento: 2\"\n}" }
+          ]
+        },
+        {
+          "name": "RECURSO_FUERA_DE_SERVICIO 409 (regla 3)",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/reservas",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"usuarioId\": 1,\n  \"recursoId\": 3,\n  \"fechaInicio\": \"2030-11-10T09:00:00\",\n  \"fechaFin\": \"2030-11-10T11:00:00\"\n}" }
+          },
+          "response": [
+            { "name": "409", "code": 409, "status": "Conflict",
+              "body": "{\n  \"status\": 409,\n  \"error\": \"RECURSO_FUERA_DE_SERVICIO\",\n  \"message\": \"El recurso está fuera de servicio: 3\"\n}" }
+          ]
+        },
+        {
+          "name": "RESERVA_SOLAPADA 409 (regla 5)",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/reservas",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"usuarioId\": 1,\n  \"recursoId\": 1,\n  \"fechaInicio\": \"2026-10-20T10:00:00\",\n  \"fechaFin\": \"2026-10-20T12:00:00\"\n}" }
+          },
+          "response": [
+            { "name": "409", "code": 409, "status": "Conflict",
+              "body": "{\n  \"status\": 409,\n  \"error\": \"RESERVA_SOLAPADA\",\n  \"message\": \"El recurso ya se encuentra reservado para este horario\"\n}" }
+          ]
+        },
+        {
+          "name": "RESERVA_FINALIZADA 409 (regla 6)",
+          "request": { "method": "DELETE", "url": "{{baseUrl}}/reservas/1" },
+          "response": [
+            { "name": "409 al cancelar dos veces", "code": 409, "status": "Conflict",
+              "body": "{\n  \"status\": 409,\n  \"error\": \"RESERVA_FINALIZADA\",\n  \"message\": \"La reserva no está activa y no puede cancelarse: 1\"\n}" }
+          ]
+        },
+        {
+          "name": "LIMITE_RESERVAS_ACTIVAS 409 (regla 8)",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/reservas",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"usuarioId\": 1,\n  \"recursoId\": 1,\n  \"fechaInicio\": \"2030-11-13T09:00:00\",\n  \"fechaFin\": \"2030-11-13T10:00:00\"\n}" }
+          },
+          "response": [
+            { "name": "409 con 3 activas previas", "code": 409, "status": "Conflict",
+              "body": "{\n  \"status\": 409,\n  \"error\": \"LIMITE_RESERVAS_ACTIVAS\",\n  \"message\": \"El usuario ya tiene 3 reservas activas: 1\"\n}" }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -196,6 +196,8 @@ docker run --rm -p 8080:8080 \
 - En el pipeline CI, el stage `pitest` (umbral 100 % de mutaciones en `service`) solo podrá
   habilitarse cuando los servicios cubran las 8 reglas de negocio. `acceptanceTest` ya cuenta con
   la feature de `GET /usuarios`; se ampliará conforme avance el contrato de usuarios/recursos/reservas.
+- Concurrencia: la regla 5 está endurecida con bloqueo pesimista + transacción (ver
+  [`docs/concurrency.md`](docs/concurrency.md)); límite conocido: H2 en memoria sin clustering.
 
 ---
 

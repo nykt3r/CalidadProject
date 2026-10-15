@@ -111,23 +111,23 @@ Cualquier cambio a esta sección debe replicarse en `frontend-plan.md §2` antes
 
 ### Fase B0 — Base transversal (bloquea todo lo demás)
 
-- [ ] B0.1 Crear paquete `exception` con una excepción por código del §2.3
+- [x] B0.1 Crear paquete `exception` con una excepción por código del §2.3
       (p. ej. `RecursoNoDisponibleException`, `ReservaSolapadaException`, `LimiteReservasException`,
       `RecursoNoEncontradoException`).
   - *Verificar:* `./gradlew compileJava` en verde.
-- [ ] B0.2 Crear `@RestControllerAdvice` global que mapee cada excepción a su HTTP + cuerpo
+- [x] B0.2 Crear `@RestControllerAdvice` global que mapee cada excepción a su HTTP + cuerpo
       `{status, error, message}`, más handlers para `MethodArgumentNotValidException` (400 VALIDACION)
       y `NoSuchElementException`/`EntityNotFound` (404 NO_ENCONTRADO).
   - *Verificar:* test de slice `@WebMvcTest` o MockMvc que fuerce un 404 y un 400 y aserte el cuerpo exacto.
-- [ ] B0.3 Crear paquetes `dto` (Request/Response del §2.1 con anotaciones `jakarta.validation`) y
+- [x] B0.3 Crear paquetes `dto` (Request/Response del §2.1 con anotaciones `jakarta.validation`) y
       `mapper` (conversión entity ↔ DTO; el mapper de reserva aplana/resume usuario y recurso como en §2.1).
   - *Verificar:* tests unitarios de mappers (entity→DTO y DTO→entity, incluyendo nulos).
-- [ ] B0.4 Configurar CORS centralizado para `http://localhost:5173`.
+- [x] B0.4 Configurar CORS centralizado para `http://localhost:5173`.
   - *Verificar:* `curl -s -o /dev/null -w '%{http_code}' -X OPTIONS http://localhost:8080/usuarios -H 'Origin: http://localhost:5173' -H 'Access-Control-Request-Method: POST'` → `200` con `Access-Control-Allow-Origin`.
-- [ ] B0.5 Migrar `GET /usuarios` a DTOs manteniendo la respuesta compatible con la feature Cucumber
+- [x] B0.5 Migrar `GET /usuarios` a DTOs manteniendo la respuesta compatible con la feature Cucumber
       (mismos campos y 2 usuarios del seed).
   - *Verificar:* `./gradlew test acceptanceTest` en verde.
-- [ ] B0.6 Ampliar `data.sql` con recursos demo (≥3, mezclando estados) y reservas demo coherentes,
+- [x] B0.6 Ampliar `data.sql` con recursos demo (≥3, mezclando estados) y reservas demo coherentes,
       sin alterar los 2 usuarios existentes.
   - *Verificar:* arranque + `curl /recursos` muestra los recursos semilla.
 
@@ -135,11 +135,11 @@ Cualquier cambio a esta sección debe replicarse en `frontend-plan.md §2` antes
 
 ### Fase B1 — Usuarios (endpoints 1–4)
 
-- [ ] B1.1 `UsuarioService.crearUsuario` (valida duplicados documento/correo → `DUPLICADO 409`).
-- [ ] B1.2 `UsuarioService.obtenerPorId` (`NO_ENCONTRADO 404`) y `cambiarEstado` (PATCH).
-- [ ] B1.3 `POST /usuarios` (201), `GET /usuarios/{id}`, `PATCH /usuarios/{id}/estado` en el controller.
+- [x] B1.1 `UsuarioService.crearUsuario` (valida duplicados documento/correo → `DUPLICADO 409`).
+- [x] B1.2 `UsuarioService.obtenerPorId` (`NO_ENCONTRADO 404`) y `cambiarEstado` (PATCH).
+- [x] B1.3 `POST /usuarios` (201), `GET /usuarios/{id}`, `PATCH /usuarios/{id}/estado` en el controller.
   - *Verificar por endpoint:* curl crea (201) → consulta (200) → inactiva (200) → consulta muestra INACTIVO; duplicar correo → 409 DUPLICADO; id inexistente → 404.
-- [ ] B1.4 Tests unitarios (Mockito) de cada método nuevo + feature Cucumber `usuario.feature`
+- [x] B1.4 Tests unitarios (Mockito) de cada método nuevo + feature Cucumber `usuario.feature`
       (crear, consultar por id, cambiar estado, errores 404/409).
   - *Verificar:* `./gradlew test acceptanceTest` verde.
 
@@ -147,31 +147,31 @@ Cualquier cambio a esta sección debe replicarse en `frontend-plan.md §2` antes
 
 ### Fase B2 — Recursos (endpoints 5–9 + E1)
 
-- [ ] B2.1 `RecursoService` CRUD + `cambiarEstado` + filtros por estado/tipo.
-- [ ] B2.2 `PUT /recursos/{id}` (E1, modificación total) + controllers POST/GET/GET{id}/PATCH estado.
-- [ ] B2.3 Disponibilidad: `GET /recursos/{id}/disponibilidad?desde=&hasta=` — `disponible=false` si
+- [x] B2.1 `RecursoService` CRUD + `cambiarEstado` + filtros por estado/tipo.
+- [x] B2.2 `PUT /recursos/{id}` (E1, modificación total) + controllers POST/GET/GET{id}/PATCH estado.
+- [x] B2.3 Disponibilidad: `GET /recursos/{id}/disponibilidad?desde=&hasta=` — `disponible=false` si
       estado ≠ DISPONIBLE o existe reserva ACTIVA solapada (`inicio < hasta && fin > desde`).
   - *Verificar:* recurso en MANTENIMIENTO → disponible=false; recurso DISPONIBLE con reserva solapada → false + lista la reserva; rango libre → true.
-- [ ] B2.4 Tests unitarios + feature Cucumber `recurso.feature` (CRUD, estados, disponibilidad, 404/400).
+- [x] B2.4 Tests unitarios + feature Cucumber `recurso.feature` (CRUD, estados, disponibilidad, 404/400).
   - *Verificar:* `./gradlew test acceptanceTest` verde.
 
 **DoD B2:** contrato §2 filas 5–9 y E1 cumplidos y probados.
 
 ### Fase B3 — Reservas (endpoints 10–14 + E2, las 8 reglas)
 
-- [ ] B3.1 `ReservaService.crearReserva` aplicando en orden: existe usuario/recurso (404) →
+- [x] B3.1 `ReservaService.crearReserva` aplicando en orden: existe usuario/recurso (404) →
       regla 4 (fin > inicio, 400) → regla 7 (inicio no pasado, 400) → regla 1 (usuario ACTIVO, 409) →
       reglas 2–3 (recurso DISPONIBLE, 409) → regla 8 (≤3 ACTIVAs del usuario, 409) →
       regla 5 (sin solapamiento ACTIVA, 409) → persiste en ACTIVA.
-- [ ] B3.2 `cancelarReserva`: ACTIVA → CANCELADA (200); FINALIZADA o CANCELADA → 409 `RESERVA_FINALIZADA`
+- [x] B3.2 `cancelarReserva`: ACTIVA → CANCELADA (200); FINALIZADA o CANCELADA → 409 `RESERVA_FINALIZADA`
       (regla 6). `DELETE` nunca borra físicamente.
-- [ ] B3.3 Consultas: `GET /reservas/{id}`, `/reservas/usuario/{usuarioId}?estado=`,
+- [x] B3.3 Consultas: `GET /reservas/{id}`, `/reservas/usuario/{usuarioId}?estado=`,
       `/reservas/recurso/{recursoId}?desde=&hasta=`, `/reservas?fecha=` (E2, reservas que intersectan ese día).
   - *Verificar por regla (curl):* una prueba que dispare cada código del §2.3 y devuelva el cuerpo exacto.
-- [ ] B3.4 Query de solapamiento en `ReservaRepository`
+- [x] B3.4 Query de solapamiento en `ReservaRepository`
       (`findActivasSolapadas(recursoId, inicio, fin)`) + `countByUsuarioIdAndEstado` para la regla 8
       (método ya existente, ahora consumirlo).
-- [ ] B3.5 Tests unitarios por regla (uno por regla como mínimo, Mockito) + features Cucumber
+- [x] B3.5 Tests unitarios por regla (uno por regla como mínimo, Mockito) + features Cucumber
       `reservaCreacion.feature` (camino feliz + reglas 1–5, 7, 8) y `reservaCancelacion.feature` (regla 6).
   - *Verificar:* `./gradlew test acceptanceTest` verde.
 
@@ -179,10 +179,10 @@ Cualquier cambio a esta sección debe replicarse en `frontend-plan.md §2` antes
 
 ### Fase B4 — Concurrencia (regla 5 bajo carga, base del escenario 500 usuarios)
 
-- [ ] B4.1 Endurecer `crearReserva` contra condiciones de carrera (decisión documentada en el README o
+- [x] B4.1 Endurecer `crearReserva` contra condiciones de carrera (decisión documentada en el README o
       en el código: bloqueo pesimista sobre el recurso + transacción, o constraint + reintento).
   - *Verificar:* test de concurrencia (hilos paralelos reservando el mismo recurso y horario) → exactamente 1 reserva ACTIVA y el resto 409.
-- [ ] B4.2 Documentar límites conocidos (H2 en memoria, sin clustering) como parte de la evidencia para
+- [x] B4.2 Documentar límites conocidos (H2 en memoria, sin clustering) como parte de la evidencia para
       la futura prueba JMeter de 500 usuarios.
   - *Verificar:* nota en README §7 o nuevo `docs/concurrency.md`.
 
