@@ -290,7 +290,10 @@ class ReservaServiceTest {
                 LocalDateTime.now().minusDays(5), LocalDateTime.now().minusDays(5).plusHours(2), EstadoReserva.FINALIZADA);
         when(reservaRepository.findByRecursoId(1L)).thenReturn(List.of(futura, pasada));
 
-        assertThat(reservaService.listarPorRecurso(1L, LocalDateTime.now(), null)).hasSize(1);
+        List<ReservaResponse> resultado = reservaService.listarPorRecurso(1L, LocalDateTime.now(), null);
+
+        assertThat(resultado).hasSize(1);
+        assertThat(resultado.get(0).estado()).isEqualTo(EstadoReserva.ACTIVA);
     }
 
     @Test
@@ -301,7 +304,10 @@ class ReservaServiceTest {
                 LocalDateTime.now().minusDays(5), LocalDateTime.now().minusDays(5).plusHours(2), EstadoReserva.FINALIZADA);
         when(reservaRepository.findByRecursoId(1L)).thenReturn(List.of(futura, pasada));
 
-        assertThat(reservaService.listarPorRecurso(1L, null, LocalDateTime.now())).hasSize(1);
+        List<ReservaResponse> resultado = reservaService.listarPorRecurso(1L, null, LocalDateTime.now());
+
+        assertThat(resultado).hasSize(1);
+        assertThat(resultado.get(0).estado()).isEqualTo(EstadoReserva.FINALIZADA);
     }
 
     @Test
